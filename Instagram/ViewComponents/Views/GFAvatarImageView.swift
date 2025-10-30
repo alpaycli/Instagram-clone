@@ -36,6 +36,12 @@ final class GFAvatarImageView: UIImageView {
     
 }
 
+extension GFAvatarImageView {
+    func cancelImageDownload() {
+       sd_cancelCurrentImageLoad()
+    }
+}
+
 
 
 import SwiftUI

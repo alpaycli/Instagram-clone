@@ -18,6 +18,9 @@ final class ThreadsPostsCell: UICollectionViewCell {
        let layout = UICollectionViewFlowLayout()
        layout.scrollDirection = .horizontal
        layout.minimumLineSpacing = 16 // Space between cells
+      let width = UIScreen.main.bounds.size.width - 32
+      layout.estimatedItemSize = CGSize(width: width, height: 10)
+
        
        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
        collectionView.isPagingEnabled = false // We'll handle paging manually
@@ -83,11 +86,11 @@ extension ThreadsPostsCell: UICollectionViewDataSource {
 
 // MARK: - UICollectionViewDelegateFlowLayout
 extension ThreadsPostsCell: UICollectionViewDelegateFlowLayout {
-   func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-      let width = collectionView.bounds.width - 32 // Subtract left + right padding
-      let height = collectionView.bounds.height
-      return CGSize(width: width, height: height)
-   }
+//   func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+//      let width = collectionView.bounds.width - 32 // Subtract left + right padding
+//      let height = collectionView.bounds.height
+//      return CGSize(width: width, height: height)
+//   }
 }
 
 // MARK: - UIScrollViewDelegate (Paging behavior)
@@ -109,11 +112,23 @@ extension ThreadsPostsCell: UIScrollViewDelegate {
 final class ThreadItemCell: UICollectionViewCell {
    static let reuseID = "ThreadItemCell"
    
-   private let profileImageView: UIImageView = {
-      let imageView = UIImageView()
-      imageView.layer.cornerRadius = 16
+   lazy var width: NSLayoutConstraint = {
+       let width = contentView.widthAnchor.constraint(equalToConstant: bounds.size.width)
+       width.isActive = true
+       return width
+   }()
+
+   override func systemLayoutSizeFitting(_ targetSize: CGSize, withHorizontalFittingPriority horizontalFittingPriority: UILayoutPriority, verticalFittingPriority: UILayoutPriority) -> CGSize {
+       width.constant = bounds.size.width
+       return contentView.systemLayoutSizeFitting(CGSize(width: targetSize.width, height: 1))
+   }
+   
+   private let generalStackView = UIStackView()
+   private let userInfoStackView = UIStackView()
+   private let profileImageView: GFAvatarImageView = {
+      let imageView = GFAvatarImageView(frame: .zero)
+      imageView.layer.cornerRadius = 6
       imageView.clipsToBounds = true
-      imageView.contentMode = .scaleAspectFill
       imageView.translatesAutoresizingMaskIntoConstraints = false
       return imageView
    }()
@@ -151,16 +166,25 @@ final class ThreadItemCell: UICollectionViewCell {
    
    private lazy var postImageView: GFAvatarImageView = {
       let imageView = GFAvatarImageView(frame: .zero)
-//      imageView.layer.cornerRadius = 10
-//      imageView.clipsToBounds = true
       imageView.contentMode = .scaleAspectFit
       imageView.backgroundColor = .clear
       imageView.translatesAutoresizingMaskIntoConstraints = false
       return imageView
    }()
    
+   private lazy var reactionsView: ThreadReactionsView = {
+      let v = ThreadReactionsView()
+      v.translatesAutoresizingMaskIntoConstraints = false
+      return v
+   }()
+   
+   // Store the height constraint so we can manage it
+   private var postImageHeightConstraint: NSLayoutConstraint?
+   
    override init(frame: CGRect) {
       super.init(frame: frame)
+      configureUserInfoStackView()
+      configureGeneralStackView()
       configure()
    }
    
@@ -168,55 +192,135 @@ final class ThreadItemCell: UICollectionViewCell {
       fatalError("init(coder:) has not been implemented")
    }
    
+   // CRITICAL: Reset cell state when reused
+   override func prepareForReuse() {
+       super.prepareForReuse()
+       
+       // Reset images to prevent wrong images appearing
+       profileImageView.image = nil
+       postImageView.image = nil
+       
+       // Cancel any ongoing image downloads
+       profileImageView.cancelImageDownload() // Implement this in GFAvatarImageView
+       postImageView.cancelImageDownload()
+       
+       // Remove postImageView from stack if it's there
+       if postImageView.superview != nil {
+           generalStackView.removeArrangedSubview(postImageView)
+           postImageView.removeFromSuperview()
+       }
+       
+       // Deactivate the height constraint
+       postImageHeightConstraint?.isActive = false
+       postImageHeightConstraint = nil
+       
+       // Reset labels
+       nameLabel.text = nil
+       timeLabel.text = nil
+       descriptionLabel.text = nil
+   }
+   
+   private func configureGeneralStackView() {
+      userInfoStackView.heightAnchor.constraint(equalToConstant: 34).isActive = true
+      userInfoStackView.alignment = .center
+      
+      generalStackView.addArrangedSubview(userInfoStackView)
+      generalStackView.addArrangedSubview(descriptionLabel)
+      generalStackView.addArrangedSubview(reactionsView)
+      
+      [userInfoStackView, descriptionLabel, postImageView, reactionsView].forEach({ $0.backgroundColor = [UIColor.lightGray, .darkGray, .cyan, .green, .magenta].randomElement() })
+            
+      let padding: CGFloat = 16
+      NSLayoutConstraint.activate([
+         reactionsView.widthAnchor.constraint(equalToConstant: contentView.frame.width)
+      ])
+      
+      generalStackView.axis = .vertical
+      generalStackView.spacing = 10
+      generalStackView.alignment = .top
+      generalStackView.distribution = .fill
+      generalStackView.translatesAutoresizingMaskIntoConstraints = false
+   }
+   
+   private func configureUserInfoStackView() {
+      userInfoStackView.addArrangedSubview(profileImageView)
+      userInfoStackView.addArrangedSubview(nameLabel)
+      userInfoStackView.addArrangedSubview(timeLabel)
+      
+      NSLayoutConstraint.activate([
+         profileImageView.heightAnchor.constraint(equalToConstant: 32),
+         profileImageView.widthAnchor.constraint(equalToConstant: 32),
+      ])
+      
+      userInfoStackView.axis = .horizontal
+      userInfoStackView.spacing = 10
+      userInfoStackView.alignment = .leading
+      userInfoStackView.translatesAutoresizingMaskIntoConstraints = false
+   }
+   
    private func configure() {
        contentView.layer.cornerRadius = 16
-       contentView.backgroundColor = .white // White background
+       contentView.backgroundColor = .white
        contentView.layer.borderWidth = 1
        contentView.layer.borderColor = UIColor.systemGray6.cgColor
        
-       contentView.addSubview(profileImageView)
-       contentView.addSubview(nameLabel)
-       contentView.addSubview(timeLabel)
+       contentView.addSubview(generalStackView)
        contentView.addSubview(moreButton)
-       contentView.addSubview(descriptionLabel)
-       contentView.addSubview(postImageView)
        
        let padding: CGFloat = 16
        
        NSLayoutConstraint.activate([
-           profileImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20),
-           profileImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: padding),
-           profileImageView.widthAnchor.constraint(equalToConstant: 32),
-           profileImageView.heightAnchor.constraint(equalToConstant: 32),
-           
-           nameLabel.topAnchor.constraint(equalTo: profileImageView.topAnchor),
-           nameLabel.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: 10),
-           
-           timeLabel.topAnchor.constraint(equalTo: profileImageView.topAnchor),
-           timeLabel.leadingAnchor.constraint(equalTo: nameLabel.trailingAnchor, constant: 5),
-           
-           moreButton.topAnchor.constraint(equalTo: profileImageView.topAnchor),
+           moreButton.topAnchor.constraint(equalTo: userInfoStackView.topAnchor),
            moreButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -padding),
            
-           descriptionLabel.topAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: 14),
-           descriptionLabel.leadingAnchor.constraint(equalTo: profileImageView.leadingAnchor),
-           descriptionLabel.trailingAnchor.constraint(equalTo: moreButton.trailingAnchor),
-           
-           postImageView.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 16),
-           postImageView.leadingAnchor.constraint(equalTo: descriptionLabel.leadingAnchor),
-           postImageView.trailingAnchor.constraint(equalTo: moreButton.trailingAnchor),
-           postImageView.heightAnchor.constraint(equalTo: postImageView.widthAnchor, multiplier: 0.75), // Aspect ratio
-           postImageView.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor, constant: -16)
+           generalStackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 21),
+           generalStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: padding),
+           generalStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -padding),
+           generalStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -padding)
        ])
    }
    
    func set(_ post: ThreadPost) {
-      // Replace with your actual image loading
+      profileImageView.downloadImage(fromURL: post.ownerPhoto)
       nameLabel.text = post.username
       timeLabel.text = "5h"
       descriptionLabel.text = post.text
+      
+      // Handle post image
       if let imageUrl = post.image {
          postImageView.downloadImage(fromURL: imageUrl)
+         
+         // Only add if not already in the stack view
+         if postImageView.superview == nil {
+            generalStackView.insertArrangedSubview(postImageView, at: 2)
+            
+            // Create and store the constraint
+            postImageHeightConstraint = postImageView.heightAnchor.constraint(equalToConstant: 150)
+            postImageHeightConstraint?.isActive = true
+         }
+      } else {
+         // Remove image view if there's no image
+         if postImageView.superview != nil {
+            generalStackView.removeArrangedSubview(postImageView)
+            postImageView.removeFromSuperview()
+         }
+         postImageHeightConstraint?.isActive = false
+         postImageHeightConstraint = nil
       }
+      
+      reactionsView.set(post)
    }
 }
+
+import SwiftUI
+
+struct ThreadItemCellView: UIViewRepresentable {
+   func makeUIView(context: Context) -> ThreadItemCell {
+      ThreadItemCell()
+   }
+   
+   func updateUIView(_ uiView: ThreadItemCell, context: Context) {
+      
+   }
+}
+

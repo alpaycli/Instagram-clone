@@ -194,9 +194,9 @@ class FeedVC: UIViewController {
    override func viewDidLoad() {
       super.viewDidLoad()
       viewModel.output = self
-      Task {
-         await viewModel.fetchAllPosts()
-      }
+//      Task {
+//         await viewModel.fetchAllPosts()
+//      }
       view.backgroundColor = .red
       
       configureCollectionView()

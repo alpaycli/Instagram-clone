@@ -30,9 +30,9 @@ struct PostModel: Codable {
          id: "id4",
          threadTitle: "Ad description",
          posts: [
-            .init(id: "921391", ownerPhoto: "", username: "ivicazubac", createdAt: .distantPast, image: "https://study.com/cimages/multimages/16/Homo_erectus_new.JPG", text: "Salam bu threads textidir", likeCount: 290, commentCount: 15, repostCount: 9, sharedCount: 3),
-            .init(id: "221391", ownerPhoto: "", username: "bradley.b", createdAt: .distantPast, image: "https://t4.ftcdn.net/jpg/04/57/50/41/360_F_457504159_nEcxnfFqE9O1jaogLTh4bviUPPQ7xncW.jpg", text: "Salam bu threads textidir", likeCount: 290, commentCount: 15, repostCount: 9, sharedCount: 3),
-            .init(id: "2213", ownerPhoto: "", username: "marklall", createdAt: .distantPast, image: "https://files.azedu.az/articles/2024/02/08/96130.jpg", text: "Salam bu threads textidir", likeCount: 290, commentCount: 15, repostCount: 9, sharedCount: 3)
+            .init(id: "921391", ownerPhoto: "", username: "ivicazubac", createdAt: .distantPast, image: nil, text: "Salam bu threads textidir", likeCount: 290, commentCount: 15, repostCount: 9, sharedCount: 3),
+            .init(id: "221391", ownerPhoto: "", username: "bradley.b", createdAt: .distantPast, image: "https://t4.ftcdn.net/jpg/04/57/50/41/360_F_457504159_nEcxnfFqE9O1jaogLTh4bviUPPQ7xncW.jpg", text: "Salam bu threads textidir", likeCount: 90, commentCount: 15, repostCount: 9, sharedCount: 3),
+            .init(id: "2213", ownerPhoto: "", username: "marklall", createdAt: .distantPast, image: "https://files.azedu.az/articles/2024/02/08/96130.jpg", text: "Salam bu threads textidir", likeCount: 20, commentCount: 15, repostCount: 9, sharedCount: 3)
          ]
       )),
       .init(postType: "normal", data:       .init(
@@ -140,6 +140,45 @@ struct ThreadPost: Codable {
     let image: String?
     let text: String?
     let likeCount, commentCount, repostCount, sharedCount: Int
+   
+   init(id: String, ownerPhoto: String, username: String, createdAt: Date?, image: String?, text: String?, likeCount: Int, commentCount: Int, repostCount: Int, sharedCount: Int) {
+      self.id = id
+      self.ownerPhoto = ownerPhoto
+      self.username = username
+      self.createdAt = createdAt
+      self.image = image
+      self.text = text
+      self.likeCount = likeCount
+      self.commentCount = commentCount
+      self.repostCount = repostCount
+      self.sharedCount = sharedCount
+   }
+   
+   
+/// Mock
+   init(
+      id: String = "",
+      ownerPhoto: String = "",
+      username: String = "",
+      createdAt: Date? = nil,
+      image: String? = "",
+      text: String? = "",
+      likeCount: Int = 0,
+      commentCount: Int = 0,
+      repostCount: Int = 0,
+   ) {
+      self.id = id
+      self.ownerPhoto = ownerPhoto
+      self.username = username
+      self.createdAt = createdAt
+      self.image = image
+      self.text = text
+      self.likeCount = likeCount
+      self.commentCount = commentCount
+      self.repostCount = repostCount
+      self.sharedCount = 0
+   }
+
 }
 
 // MARK: - Suggestion
