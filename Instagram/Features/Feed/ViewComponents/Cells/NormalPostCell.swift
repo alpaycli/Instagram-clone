@@ -1,0 +1,321 @@
+//
+//  NormalPostCell.swift
+//  Instagram
+//
+//  Created by Alpay Calalli on 28.10.25.
+//
+
+import UIKit
+
+class NormalPostCell: UICollectionViewCell {
+   static let reuseId = "NormalPostCell"
+      
+   private lazy var profileImageView: GFAvatarImageView = {
+      let imageView = GFAvatarImageView(frame: .zero)
+            
+      imageView.layer.cornerRadius = 16
+      imageView.clipsToBounds = true
+      
+      imageView.translatesAutoresizingMaskIntoConstraints = false
+      return imageView
+
+   }()
+   
+   private lazy var nameLabel: IGTitleLabel = {
+      let l = IGTitleLabel(textAlignment: .left, fontSize: 13)
+      
+      return l
+   }()
+   
+   private lazy var locationLabel: IGSecondaryTitleLabel = {
+      let l = IGSecondaryTitleLabel(fontSize: 11)
+      
+      return l
+   }()
+   
+   private lazy var moreButton: UIButton = {
+      let btn = UIButton()
+      btn.setImage(PostActionIcon.more, for: .normal)
+      btn.tintColor = .label
+      
+      btn.translatesAutoresizingMaskIntoConstraints = false
+      return btn
+   }()
+   
+   private lazy var postImageView: GFAvatarImageView = {
+      let imageView = GFAvatarImageView(frame: .zero)
+            
+      imageView.clipsToBounds = true
+      
+      imageView.translatesAutoresizingMaskIntoConstraints = false
+      return imageView
+   }()
+   
+   private lazy var postImagesCollectionView: UICollectionView = {
+       let layout = UICollectionViewFlowLayout()
+       layout.scrollDirection = .horizontal
+      layout.minimumInteritemSpacing = 0
+      layout.minimumLineSpacing = 0
+//       layout.sectionInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+
+      print(contentView.bounds.width)
+            layout.itemSize = CGSize(width: 324, height: 324)
+       
+       let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+       collectionView.backgroundColor = .clear
+       collectionView.showsHorizontalScrollIndicator = false
+//      collectionView.isPagingEnabled = true
+       collectionView.dataSource = self
+       collectionView.register(PostImageCell.self, forCellWithReuseIdentifier: PostImageCell.reuseId)
+      
+      collectionView.translatesAutoresizingMaskIntoConstraints = false
+       return collectionView
+   }()
+   
+   private lazy var likeButton: UIButton = {
+      let btn = UIButton()
+      btn.setImage(PostActionIcon.like, for: .normal)
+      
+      btn.translatesAutoresizingMaskIntoConstraints = false
+      return btn
+   }()
+   
+   private lazy var commentButton: UIButton = {
+      let btn = UIButton()
+      btn.setImage(PostActionIcon.comment, for: .normal)
+      
+      btn.translatesAutoresizingMaskIntoConstraints = false
+      return btn
+   }()
+   
+   private lazy var shareButton: UIButton = {
+      let btn = UIButton()
+      btn.setImage(PostActionIcon.share, for: .normal)
+      
+      btn.translatesAutoresizingMaskIntoConstraints = false
+      return btn
+   }()
+   
+   private lazy var saveButton: UIButton = {
+      let btn = UIButton()
+      btn.setImage(PostActionIcon.save, for: .normal)
+      
+      btn.translatesAutoresizingMaskIntoConstraints = false
+      return btn
+   }()
+   
+   private lazy var likedByLabel: IGBodyLabel = {
+      let l = IGBodyLabel(textAlignment: .left, fontSize: 13)
+      
+      return l
+   }()
+   
+   private lazy var descriptionLabel: IGBodyLabel = {
+      let l = IGBodyLabel(textAlignment: .left, fontSize: 13)
+      l.lineBreakMode = .byTruncatingTail
+      l.numberOfLines = 0
+      return l
+   }()
+   
+   private lazy var postDateLabel: IGBodyLabel = {
+      let l = IGBodyLabel(textAlignment: .left, fontSize: 11)
+      
+      return l
+   }()
+   
+   override init(frame: CGRect) {
+      super.init(frame: frame)
+//      backgroundColor = .blue
+      layoutUI()
+   }
+   
+   required init?(coder: NSCoder) {
+      fatalError("init(coder:) has not been implemented")
+   }
+   
+//   private var hasConfiguredLayout = false
+//   override func layoutSubviews() {
+//       super.layoutSubviews()
+//       
+//       if !hasConfiguredLayout {
+//           if let layout = postImagesCollectionView.collectionViewLayout as? UICollectionViewFlowLayout {
+//               layout.itemSize = CGSize(width: contentView.bounds.width, height: contentView.bounds.width)
+////               layout.itemSize = CGSize(width: 375, height: 375)
+//              postImagesCollectionView.heightAnchor.constraint(equalToConstant: contentView.bounds.width).isActive = true
+//              layout.minimumInteritemSpacing = 0
+//              layout.minimumLineSpacing = 0
+//              postImagesCollectionView.collectionViewLayout = layout
+//           }
+//           hasConfiguredLayout = true
+//       }
+//   }
+//
+
+   func set(_ model: NormalPostModel) {
+      if let url = model.userPhoto {
+         profileImageView.downloadImage(fromURL: url)
+      }
+      for image in model.images where !image.isEmpty {
+//         postImagesCollectionView
+      }
+      
+      nameLabel.text = model.username
+      locationLabel.text = model.location
+      likedByLabel.attributedText = NSMutableAttributedString()
+         .normal("Liked by ", fontSize: 13)
+         .bold(model.likedBy.first ?? "N/A", fontSize: 13)
+         .normal(" and ", fontSize: 13)
+         .bold("\(model.likeCount) others", fontSize: 13)
+      descriptionLabel.attributedText = NSMutableAttributedString()
+         .bold(model.username, fontSize: 13)
+         .normal(model.description, fontSize: 13)
+      postDateLabel.text = model.createdAt.formatted()
+   }
+   
+   func set(
+      profileImageUrl: String,
+      name: String,
+      location: String,
+      postImageUrl: String,
+      likedBy: String,
+      likeCount: Int,
+      description: String,
+      postDateLabel: Date
+   ) {
+      nameLabel.text = name
+      locationLabel.text = location
+      
+      likedByLabel.attributedText = NSMutableAttributedString()
+         .normal("Liked by ", fontSize: 13)
+         .bold(likedBy, fontSize: 13)
+         .normal(" and ", fontSize: 13)
+         .bold("\(likeCount) others", fontSize: 13)
+      
+      descriptionLabel.attributedText = NSMutableAttributedString()
+         .bold(name, fontSize: 13)
+         .normal(description, fontSize: 13)
+      
+      profileImageView.downloadImage(fromURL: profileImageUrl)
+      postImageView.downloadImage(fromURL: postImageUrl)
+      self.postDateLabel.text = postDateLabel.formatted()
+   }
+   
+   private func layoutUI() {
+      contentView.addSubviews(profileImageView, nameLabel, locationLabel, moreButton, postImageView, postImagesCollectionView, likeButton, commentButton, shareButton, saveButton, likedByLabel, descriptionLabel, postDateLabel)
+//      contentView.backgroundColor = .red
+      backgroundColor = .yellow
+      
+      
+      let leadingPadding: CGFloat = 14
+      // 42
+      NSLayoutConstraint.activate([
+         profileImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20),
+         profileImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: leadingPadding),
+         profileImageView.widthAnchor.constraint(equalToConstant: 32),
+         profileImageView.heightAnchor.constraint(equalToConstant: 32),
+         
+         nameLabel.topAnchor.constraint(equalTo: profileImageView.topAnchor),
+         nameLabel.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: 12),
+         nameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -leadingPadding),
+         
+         locationLabel.bottomAnchor.constraint(equalTo: profileImageView.bottomAnchor),
+         locationLabel.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: 12),
+         locationLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -leadingPadding),
+         
+         moreButton.topAnchor.constraint(equalTo: profileImageView.topAnchor),
+         moreButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -leadingPadding),
+         
+         postImagesCollectionView/*postImageView*/.topAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: 10),
+         postImagesCollectionView/*postImageView*/.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+         postImagesCollectionView/*postImageView*/.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+//         postImagesCollectionView.heightAnchor.constraint(equalToConstant: 375),
+         
+         
+//         postImageView.heightAnchor.constraint(equalTo: widthAnchor, multiplier: 0.85),
+         
+         likeButton.topAnchor.constraint(equalTo: postImagesCollectionView.bottomAnchor, constant: 13),
+         likeButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: leadingPadding),
+         likeButton.widthAnchor.constraint(equalToConstant: 22),
+         likeButton.heightAnchor.constraint(equalToConstant: 22),
+         
+         commentButton.topAnchor.constraint(equalTo: likeButton.topAnchor),
+         commentButton.leadingAnchor.constraint(equalTo: likeButton.trailingAnchor, constant: 17),
+         commentButton.widthAnchor.constraint(equalToConstant: 22),
+         commentButton.heightAnchor.constraint(equalToConstant: 22),
+         
+         shareButton.topAnchor.constraint(equalTo: likeButton.topAnchor),
+         shareButton.leadingAnchor.constraint(equalTo: commentButton.trailingAnchor, constant: 17),
+         shareButton.widthAnchor.constraint(equalToConstant: 22),
+         shareButton.heightAnchor.constraint(equalToConstant: 22),
+         
+         saveButton.topAnchor.constraint(equalTo: likeButton.topAnchor),
+         saveButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -leadingPadding),
+         saveButton.widthAnchor.constraint(equalToConstant: 22),
+         saveButton.heightAnchor.constraint(equalToConstant: 22),
+         
+         likedByLabel.topAnchor.constraint(equalTo: likeButton.bottomAnchor, constant: 6),
+         likedByLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: leadingPadding),
+         likedByLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -leadingPadding),
+         likedByLabel.heightAnchor.constraint(equalToConstant: 20),
+         
+         descriptionLabel.topAnchor.constraint(equalTo: likedByLabel.bottomAnchor, constant: 5),
+         descriptionLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: leadingPadding),
+         descriptionLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -leadingPadding),
+//         descriptionLabel.heightAnchor.constraint(equalToConstant: 88),
+         
+         postDateLabel.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 12),
+         postDateLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: leadingPadding),
+         postDateLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -leadingPadding),
+         postDateLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
+      ])
+
+   }
+}
+
+extension NormalPostCell: UICollectionViewDataSource {
+   func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+      3
+   }
+   
+   func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+      let cell = collectionView.dequeueReusableCell(
+         withReuseIdentifier: PostImageCell.reuseId,
+          for: indexPath
+      ) as! PostImageCell
+            
+      return cell
+   }
+   
+   
+}
+
+class PostImageCell: UICollectionViewCell {
+   static let reuseId = "PostImageCell"
+   
+   private lazy var imageView: GFAvatarImageView = {
+      let imageView = GFAvatarImageView(frame: .zero)
+      
+      imageView.translatesAutoresizingMaskIntoConstraints = false
+      return imageView
+   }()
+   
+   override init(frame: CGRect) {
+      super.init(frame: frame)
+      backgroundColor = [.red, .yellow, .green].randomElement()
+      addSubview(imageView)
+      imageView.downloadImage(fromURL: "https://eurasia.travel/wp-content/uploads/2025/03/2.-Sheki-historic-centre.jpg")
+   }
+   
+   override func layoutSubviews() {
+      super.layoutSubviews()
+      NSLayoutConstraint.activate([
+         imageView.heightAnchor.constraint(equalToConstant: contentView.frame.width),
+         imageView.widthAnchor.constraint(equalToConstant: contentView.frame.width)
+      ])
+   }
+   
+   required init?(coder: NSCoder) {
+      fatalError("init(coder:) has not been implemented")
+   }
+}
+
