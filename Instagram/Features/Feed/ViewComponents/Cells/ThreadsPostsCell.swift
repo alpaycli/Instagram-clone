@@ -9,6 +9,7 @@ final class ThreadsPostsCell: UICollectionViewCell {
    private lazy var headerView: ThreadsHeaderView = {
       let v = ThreadsHeaderView()
       
+      v.translatesAutoresizingMaskIntoConstraints = false
       return v
    }()
    private lazy var containerView: UIView = {
@@ -16,6 +17,8 @@ final class ThreadsPostsCell: UICollectionViewCell {
       v.backgroundColor = .white
       v.layer.cornerRadius = 16
       v.layer.masksToBounds = true
+      
+      v.translatesAutoresizingMaskIntoConstraints = false
       return v
    }()
    
@@ -23,6 +26,8 @@ final class ThreadsPostsCell: UICollectionViewCell {
       let control = UIPageControl()
       control.currentPageIndicatorTintColor = .label
       control.pageIndicatorTintColor = .systemGray3
+      
+      control.translatesAutoresizingMaskIntoConstraints = false
       return control
    }()
    
@@ -43,6 +48,8 @@ final class ThreadsPostsCell: UICollectionViewCell {
        collectionView.decelerationRate = .fast
        collectionView.contentInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
        collectionView.register(ThreadItemCell.self, forCellWithReuseIdentifier: ThreadItemCell.reuseID)
+      
+      collectionView.translatesAutoresizingMaskIntoConstraints = false
        return collectionView
    }()
    
@@ -61,11 +68,6 @@ final class ThreadsPostsCell: UICollectionViewCell {
       
       contentView.addSubview(containerView)
       containerView.addSubviews(headerView, collectionView, pageControl)
-
-      containerView.translatesAutoresizingMaskIntoConstraints = false
-      headerView.translatesAutoresizingMaskIntoConstraints = false
-      collectionView.translatesAutoresizingMaskIntoConstraints = false
-      pageControl.translatesAutoresizingMaskIntoConstraints = false
       
       NSLayoutConstraint.activate([
          containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 0),

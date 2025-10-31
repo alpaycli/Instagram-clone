@@ -13,6 +13,8 @@ import UIKit
 // TODO: Post ve Threadsin Headerini genericlestirmek
 // TODO: PostDateLabel fix
 // TODO: 5h (timeLabel) in threads fix
+// TODO: ThreadsPost : vertical padding
+// TODO: ThreadsPost : image size and alignment
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 

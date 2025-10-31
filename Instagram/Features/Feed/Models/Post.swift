@@ -24,7 +24,19 @@ struct PostModel: Codable {
    static let mockData: [Self] = [
       .init(
          postType: "normal",
-         data: .init(likeCount: 120, likedBy: ["mike.s"], description: "Nice post description", username: "cristiano", createdAt: .distantPast, location: "Baku, Azerbaijan")
+         data: .init(
+            likeCount: 120,
+            likedBy: ["mike.s"],
+            description: "Nice post description",
+            username: "cristiano",
+            createdAt: .distantPast,
+            location: "Baku, Azerbaijan",
+            images: [
+               "https://t4.ftcdn.net/jpg/04/57/50/41/360_F_457504159_nEcxnfFqE9O1jaogLTh4bviUPPQ7xncW.jpg",
+               "https://t4.ftcdn.net/jpg/04/57/50/41/360_F_457504159_nEcxnfFqE9O1jaogLTh4bviUPPQ7xncW.jpg",
+               "https://t4.ftcdn.net/jpg/04/57/50/41/360_F_457504159_nEcxnfFqE9O1jaogLTh4bviUPPQ7xncW.jpg"
+            ]
+         )
       ),
       .init(postType: "threads", data: .init(
          id: "id4",
@@ -38,7 +50,11 @@ struct PostModel: Codable {
       )),
       .init(postType: "normal", data:       .init(
          id: "id5",
-         description: "One Another post description"
+         description: "One Another post description",
+         images: [
+            "https://t4.ftcdn.net/jpg/04/57/50/41/360_F_457504159_nEcxnfFqE9O1jaogLTh4bviUPPQ7xncW.jpg",
+            "https://t4.ftcdn.net/jpg/04/57/50/41/360_F_457504159_nEcxnfFqE9O1jaogLTh4bviUPPQ7xncW.jpg"
+         ]
       ))
 
    ]

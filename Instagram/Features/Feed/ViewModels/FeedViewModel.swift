@@ -24,18 +24,18 @@ class FeedViewModel {
       guard let url = URL(string: urlString) else { return }
       
       var urlRequest = URLRequest(url: url)
-      urlRequest.timeoutInterval = 120
+      urlRequest.timeoutInterval = 20
       
 //      isLoadingCharacters = true
       do {
          let response = try await networkManager.fetch(PostResponse.self, url: urlRequest)
          let result = response.data
-         print(response.data.count)
+         print("response.data.count", response.data.count)
          allPosts = result
          output?.updateView(with: allPosts)
 //         isLoadingCharacters = false
       } catch {
-         print("Error", error.localizedDescription)
+         print("Error with network request", error.localizedDescription)
 //         isLoadingCharacters = false
       }
       

@@ -10,6 +10,7 @@ import UIKit
 class NormalPostCell: UICollectionViewCell {
    static let reuseId = "NormalPostCell"
       
+   private var images: [String] = []
    private lazy var profileImageView: GFAvatarImageView = {
       let imageView = GFAvatarImageView(frame: .zero)
             
@@ -67,6 +68,7 @@ class NormalPostCell: UICollectionViewCell {
       collectionView.isPagingEnabled = true
       collectionView.decelerationRate = .normal
        collectionView.dataSource = self
+      collectionView.delegate = self
        collectionView.register(PostImageCell.self, forCellWithReuseIdentifier: PostImageCell.reuseId)
       
       collectionView.translatesAutoresizingMaskIntoConstraints = false
@@ -95,6 +97,15 @@ class NormalPostCell: UICollectionViewCell {
       
       btn.translatesAutoresizingMaskIntoConstraints = false
       return btn
+   }()
+   
+   private lazy var pageControl: UIPageControl = {
+      let control = UIPageControl()
+      control.currentPageIndicatorTintColor = .label
+      control.pageIndicatorTintColor = .systemGray3
+      
+      control.translatesAutoresizingMaskIntoConstraints = false
+      return control
    }()
    
    private lazy var saveButton: UIButton = {
@@ -181,6 +192,7 @@ class NormalPostCell: UICollectionViewCell {
        likedByLabel.text = nil
        descriptionLabel.text = nil
        postDateLabel.text = nil
+      images = []
    }
 
 
@@ -188,9 +200,10 @@ class NormalPostCell: UICollectionViewCell {
       if let url = model.userPhoto {
          profileImageView.downloadImage(fromURL: url)
       }
-      for image in model.images where !image.isEmpty {
-//         postImagesCollectionView
-      }
+      images = model.images.filter({ !$0.isEmpty })
+      
+      pageControl.numberOfPages = model.images.count
+      pageControl.currentPage = 0
       
       nameLabel.text = model.username
       locationLabel.text = model.location
@@ -230,11 +243,15 @@ class NormalPostCell: UICollectionViewCell {
       
       profileImageView.downloadImage(fromURL: profileImageUrl)
       postImageView.downloadImage(fromURL: postImageUrl)
+      
+      pageControl.numberOfPages = 3
+      pageControl.currentPage = 0
+      
       self.postDateLabel.text = postDateLabel.formatted()
    }
    
    private func layoutUI() {
-      contentView.addSubviews(profileImageView, nameLabel, locationLabel, moreButton, postImageView, postImagesCollectionView, likeButton, commentButton, shareButton, saveButton, likedByLabel, descriptionLabel, postDateLabel)
+      contentView.addSubviews(profileImageView, nameLabel, locationLabel, moreButton, postImageView, postImagesCollectionView, likeButton, commentButton, shareButton, pageControl, saveButton, likedByLabel, descriptionLabel, postDateLabel)
       
       if let layout = postImagesCollectionView.collectionViewLayout as? UICollectionViewFlowLayout {
           layout.itemSize = CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.width)
@@ -285,6 +302,10 @@ class NormalPostCell: UICollectionViewCell {
          shareButton.widthAnchor.constraint(equalToConstant: 22),
          shareButton.heightAnchor.constraint(equalToConstant: 22),
          
+//         pageControl.topAnchor.constraint(equalTo: likeButton.topAnchor),
+         pageControl.centerYAnchor.constraint(equalTo: likeButton.centerYAnchor),
+         pageControl.centerXAnchor.constraint(equalTo: postImagesCollectionView.centerXAnchor),
+         
          saveButton.topAnchor.constraint(equalTo: likeButton.topAnchor),
          saveButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -leadingPadding),
          saveButton.widthAnchor.constraint(equalToConstant: 22),
@@ -311,19 +332,26 @@ class NormalPostCell: UICollectionViewCell {
 
 extension NormalPostCell: UICollectionViewDataSource {
    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-      3
+      images.count
    }
    
    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+      let image = images[indexPath.item]
       let cell = collectionView.dequeueReusableCell(
          withReuseIdentifier: PostImageCell.reuseId,
           for: indexPath
       ) as! PostImageCell
-            
+      cell.set(image: image)
       return cell
    }
-   
-   
+}
+
+extension NormalPostCell: UICollectionViewDelegate {
+   func scrollViewDidScroll(_ scrollView: UIScrollView) {
+       let page = Int(round(scrollView.contentOffset.x / scrollView.bounds.width))
+       pageControl.currentPage = page
+   }
+
 }
 
 class PostImageCell: UICollectionViewCell {
@@ -355,10 +383,13 @@ class PostImageCell: UICollectionViewCell {
          imageView.widthAnchor.constraint(equalToConstant: contentView.frame.width)
       ])
    }
-
    
    required init?(coder: NSCoder) {
       fatalError("init(coder:) has not been implemented")
+   }
+   
+   func set(image imageUrl: String) {
+      imageView.downloadImage(fromURL: imageUrl)
    }
 }
 
