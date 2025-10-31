@@ -29,6 +29,7 @@ struct PostModel: Codable {
       .init(postType: "threads", data: .init(
          id: "id4",
          threadTitle: "Ad description",
+         joinCount: 129,
          posts: [
             .init(id: "921391", ownerPhoto: "", username: "ivicazubac", createdAt: .distantPast, image: nil, text: "Salam bu threads textidir", likeCount: 290, commentCount: 15, repostCount: 9, sharedCount: 3),
             .init(id: "221391", ownerPhoto: "", username: "bradley.b", createdAt: .distantPast, image: "https://t4.ftcdn.net/jpg/04/57/50/41/360_F_457504159_nEcxnfFqE9O1jaogLTh4bviUPPQ7xncW.jpg", text: "Salam bu threads textidir", likeCount: 90, commentCount: 15, repostCount: 9, sharedCount: 3),
