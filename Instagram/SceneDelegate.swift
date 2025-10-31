@@ -9,6 +9,10 @@ import UIKit
 
 // TODO: Liked by userin imagei yoxdu
 // TODO: Representablelari temizlemek
+// TODO: NormalPost nan AdPostu birlestirmek
+// TODO: Post ve Threadsin Headerini genericlestirmek
+// TODO: PostDateLabel fix
+// TODO: 5h (timeLabel) in threads fix
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 

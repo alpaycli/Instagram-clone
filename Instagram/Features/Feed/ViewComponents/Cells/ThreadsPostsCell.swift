@@ -131,13 +131,14 @@ extension ThreadsPostsCell: UICollectionViewDelegateFlowLayout {
 }
 
 // MARK: - UIScrollViewDelegate (Paging behavior)
+
 extension ThreadsPostsCell: UIScrollViewDelegate {
    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
       let cellWidth = scrollView.bounds.width - 32
       let spacing: CGFloat = 16
       let totalCellWidth = cellWidth + spacing
       
-      let targetX = targetContentOffset.pointee.x + 16 // Account for left inset
+      let targetX = targetContentOffset.pointee.x + 16
       let index = round(targetX / totalCellWidth)
       let newOffset = index * totalCellWidth - 16
       

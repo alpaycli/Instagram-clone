@@ -22,8 +22,8 @@ final class GFAvatarImageView: UIImageView {
     }
     
     private func configure() {
-        layer.cornerRadius = 10
-        clipsToBounds = true
+//        layer.cornerRadius = 10
+//        clipsToBounds = true
 //        image = placeholderImage
        backgroundColor = .gray
         translatesAutoresizingMaskIntoConstraints = false

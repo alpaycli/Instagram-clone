@@ -45,7 +45,7 @@ class NormalPostCell: UICollectionViewCell {
    private lazy var postImageView: GFAvatarImageView = {
       let imageView = GFAvatarImageView(frame: .zero)
             
-      imageView.clipsToBounds = true
+//      imageView.clipsToBounds = true
       
       imageView.translatesAutoresizingMaskIntoConstraints = false
       return imageView
@@ -59,12 +59,13 @@ class NormalPostCell: UICollectionViewCell {
 //       layout.sectionInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
 
       print(contentView.bounds.width)
-            layout.itemSize = CGSize(width: 324, height: 324)
+            layout.itemSize = CGSize(width: 375, height: 375)
        
        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
        collectionView.backgroundColor = .clear
        collectionView.showsHorizontalScrollIndicator = false
-//      collectionView.isPagingEnabled = true
+      collectionView.isPagingEnabled = true
+      collectionView.decelerationRate = .normal
        collectionView.dataSource = self
        collectionView.register(PostImageCell.self, forCellWithReuseIdentifier: PostImageCell.reuseId)
       
@@ -149,7 +150,39 @@ class NormalPostCell: UICollectionViewCell {
 //           hasConfiguredLayout = true
 //       }
 //   }
-//
+   override func layoutSubviews() {
+       super.layoutSubviews()
+       if let layout = postImagesCollectionView.collectionViewLayout as? UICollectionViewFlowLayout {
+           let newSize = CGSize(width: contentView.bounds.width, height: contentView.bounds.width)
+           if layout.itemSize != newSize {
+               layout.itemSize = newSize
+               layout.invalidateLayout()
+           }
+       }
+   }
+
+   
+   override func prepareForReuse() {
+       super.prepareForReuse()
+
+       // Reset image cells
+       postImagesCollectionView.setContentOffset(.zero, animated: false)
+       postImagesCollectionView.reloadData()
+
+       // Reset images
+       profileImageView.image = nil
+       postImageView.image = nil
+
+       profileImageView.cancelImageDownload()
+       postImageView.cancelImageDownload()
+
+       nameLabel.text = nil
+       locationLabel.text = nil
+       likedByLabel.text = nil
+       descriptionLabel.text = nil
+       postDateLabel.text = nil
+   }
+
 
    func set(_ model: NormalPostModel) {
       if let url = model.userPhoto {
@@ -202,12 +235,16 @@ class NormalPostCell: UICollectionViewCell {
    
    private func layoutUI() {
       contentView.addSubviews(profileImageView, nameLabel, locationLabel, moreButton, postImageView, postImagesCollectionView, likeButton, commentButton, shareButton, saveButton, likedByLabel, descriptionLabel, postDateLabel)
-//      contentView.backgroundColor = .red
-      backgroundColor = .yellow
       
+      if let layout = postImagesCollectionView.collectionViewLayout as? UICollectionViewFlowLayout {
+          layout.itemSize = CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.width)
+          layout.minimumInteritemSpacing = 0
+          layout.minimumLineSpacing = 0
+      }
+      postImagesCollectionView.heightAnchor.constraint(equalTo: postImagesCollectionView.widthAnchor).isActive = true
+
       
       let leadingPadding: CGFloat = 14
-      // 42
       NSLayoutConstraint.activate([
          profileImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20),
          profileImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: leadingPadding),
@@ -301,18 +338,24 @@ class PostImageCell: UICollectionViewCell {
    
    override init(frame: CGRect) {
       super.init(frame: frame)
-      backgroundColor = [.red, .yellow, .green].randomElement()
       addSubview(imageView)
       imageView.downloadImage(fromURL: "https://eurasia.travel/wp-content/uploads/2025/03/2.-Sheki-historic-centre.jpg")
    }
    
    override func layoutSubviews() {
-      super.layoutSubviews()
+       super.layoutSubviews()
+//       NSLayoutConstraint.activate([
+//           imageView.topAnchor.constraint(equalTo: contentView.topAnchor),
+//           imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+//           imageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+//           imageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
+//       ])
       NSLayoutConstraint.activate([
          imageView.heightAnchor.constraint(equalToConstant: contentView.frame.width),
          imageView.widthAnchor.constraint(equalToConstant: contentView.frame.width)
       ])
    }
+
    
    required init?(coder: NSCoder) {
       fatalError("init(coder:) has not been implemented")
