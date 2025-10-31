@@ -9,6 +9,8 @@ import UIKit
 
 class ThreadReactionItemView: UIView {
    
+   private let stackView = UIStackView()
+   
    private var buttonAction: () -> Void = {}
    
    private lazy var actionButton: UIButton = {
@@ -33,12 +35,26 @@ class ThreadReactionItemView: UIView {
    
    override init(frame: CGRect) {
        super.init(frame: frame)
-       configure()
+      stackView.axis = .horizontal
+      stackView.spacing = 8
+      addSubview(stackView)
+      stackView.addArrangedSubview(actionButton)
+      stackView.addArrangedSubview(label)
+      
+      stackView.translatesAutoresizingMaskIntoConstraints = false
+      NSLayoutConstraint.activate([
+         stackView.leadingAnchor.constraint(equalTo: leadingAnchor),
+         stackView.topAnchor.constraint(equalTo: topAnchor),
+         stackView.trailingAnchor.constraint(equalTo: trailingAnchor),
+         stackView.bottomAnchor.constraint(equalTo: bottomAnchor)
+      ])
+//       configure()
    }
    
    required init?(coder: NSCoder) {
        fatalError("init(coder:) has not been implemented")
    }
+   
    func set(image: UIImage, label: String, buttonAction: @escaping () -> Void) {
       print("i got set on bottom too")
       self.actionButton.setImage(image, for: .normal)

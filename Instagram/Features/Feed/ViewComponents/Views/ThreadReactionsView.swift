@@ -35,9 +35,9 @@ class ThreadReactionsView: UIView {
    
    private func configure() {
       stackView.axis = .horizontal
-      stackView.spacing = 10
+      stackView.spacing = 15
       stackView.alignment = .leading
-      stackView.distribution = .equalSpacing
+//      stackView.distribution = .fill
       addSubview(stackView)
       
       [likeItemView, commentItemView, repostItemView, shareItemView]
@@ -47,9 +47,9 @@ class ThreadReactionsView: UIView {
       NSLayoutConstraint.activate([
          stackView.topAnchor.constraint(equalTo: topAnchor, constant: 10),
          stackView.leadingAnchor.constraint(equalTo: leadingAnchor),
-         stackView.trailingAnchor.constraint(equalTo: trailingAnchor),
+         stackView.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor),
 //         stackView.heightAnchor.constraint(equalToConstant: 40),
-         stackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10) // ✅ add this
+         stackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10)
 
       ])
    }
