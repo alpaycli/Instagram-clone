@@ -14,7 +14,6 @@ final class ThreadsPostsCell: UICollectionViewCell {
    }()
    private lazy var containerView: UIView = {
       let v = UIView()
-      v.backgroundColor = .white
       v.layer.cornerRadius = 16
       v.layer.masksToBounds = true
       
@@ -37,7 +36,6 @@ final class ThreadsPostsCell: UICollectionViewCell {
        layout.minimumLineSpacing = 16 // Space between cells
       let width = UIScreen.main.bounds.size.width - 32
       layout.estimatedItemSize = CGSize(width: width, height: 10)
-
        
        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
        collectionView.isPagingEnabled = false // We'll handle paging manually
@@ -65,6 +63,7 @@ final class ThreadsPostsCell: UICollectionViewCell {
    private func layoutUI() {
       backgroundColor = .clear // so outer feed gray shows
       collectionView.backgroundColor = .systemGray5// Gray background
+      containerView.backgroundColor = .white
       
       contentView.addSubview(containerView)
       containerView.addSubviews(headerView, collectionView, pageControl)
@@ -83,7 +82,9 @@ final class ThreadsPostsCell: UICollectionViewCell {
          collectionView.topAnchor.constraint(equalTo: headerView.bottomAnchor, constant: 8),
          collectionView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
          collectionView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-         collectionView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -12),
+//         collectionView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -12),
+         collectionView.heightAnchor.constraint(equalToConstant: 360),
+
          
          pageControl.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: 18),
          pageControl.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
@@ -165,7 +166,7 @@ final class ThreadItemCell: UICollectionViewCell {
    
    private let generalStackView = UIStackView()
    private let userInfoStackView = UIStackView()
-   private let profileImageView: GFAvatarImageView = {
+   private lazy var profileImageView: GFAvatarImageView = {
       let imageView = GFAvatarImageView(frame: .zero)
       imageView.layer.cornerRadius = 6
       imageView.clipsToBounds = true
