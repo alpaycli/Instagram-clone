@@ -14,13 +14,36 @@ protocol FeedViewModelOutput: AnyObject {
 class FeedViewModel {
    weak var output: FeedViewModelOutput?
    
-   private(set) var allStories: [Story] = Story.mockData
+   private(set) var allStories: [StoryModel] = StoryModel.mockData
    private(set) var allPosts: [PostModel] = PostModel.mockData
    
    private let networkManager = NetworkManager.shared
    
    func fetchAllPosts() async {
       let urlString = "http://172.20.10.179:3000/feed"
+      guard let url = URL(string: urlString) else { return }
+      
+      var urlRequest = URLRequest(url: url)
+      urlRequest.timeoutInterval = 20
+      
+//      isLoadingCharacters = true
+      do {
+         let response = try await networkManager.fetch(PostResponse.self, url: urlRequest)
+         let result = response.data
+         print("response.data.count", response.data.count)
+         allPosts = result
+         output?.updateView(with: allPosts)
+//         isLoadingCharacters = false
+      } catch {
+         print("Error with network request", error.localizedDescription)
+//         isLoadingCharacters = false
+      }
+      
+      
+   }
+   
+   func fetchAllStories() async {
+      let urlString = "http://172.20.10.179:3000/stories"
       guard let url = URL(string: urlString) else { return }
       
       var urlRequest = URLRequest(url: url)

@@ -1,6 +1,15 @@
 {
-  "originHash" : "43c3f0985acd43259d5ffa01bf0b58c86424dd8f659580f834e1080ba557dfd5",
+  "originHash" : "9149e2b147e3b81a90ef110e441b699db1cd08f7170e99f8eabe9dd3dce97c88",
   "pins" : [
+    {
+      "identity" : "igstorybuttonkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/KaoruMuta/IGStoryButtonKit.git",
+      "state" : {
+        "revision" : "5b2617f169275eac73545b281e8d69f98a172f1c",
+        "version" : "1.0.2"
+      }
+    },
     {
       "identity" : "jsringview",
       "kind" : "remoteSourceControl",

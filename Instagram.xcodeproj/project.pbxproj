@@ -10,6 +10,7 @@
 		C9099A752EB873DD00061E14 /* JSRingView in Frameworks */ = {isa = PBXBuildFile; productRef = C9099A742EB873DD00061E14 /* JSRingView */; };
 		C96A21502EB1182300B32F96 /* SDWebImage in Frameworks */ = {isa = PBXBuildFile; productRef = C96A214F2EB1182300B32F96 /* SDWebImage */; };
 		C96A21522EB1182300B32F96 /* SDWebImageMapKit in Frameworks */ = {isa = PBXBuildFile; productRef = C96A21512EB1182300B32F96 /* SDWebImageMapKit */; };
+		C970AF922EB895D7005C015D /* IGStoryButtonKit in Frameworks */ = {isa = PBXBuildFile; productRef = C970AF912EB895D7005C015D /* IGStoryButtonKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,6 +44,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C9099A752EB873DD00061E14 /* JSRingView in Frameworks */,
+				C970AF922EB895D7005C015D /* IGStoryButtonKit in Frameworks */,
 				C96A21522EB1182300B32F96 /* SDWebImageMapKit in Frameworks */,
 				C96A21502EB1182300B32F96 /* SDWebImage in Frameworks */,
 			);
@@ -90,6 +92,7 @@
 				C96A214F2EB1182300B32F96 /* SDWebImage */,
 				C96A21512EB1182300B32F96 /* SDWebImageMapKit */,
 				C9099A742EB873DD00061E14 /* JSRingView */,
+				C970AF912EB895D7005C015D /* IGStoryButtonKit */,
 			);
 			productName = Instagram;
 			productReference = C950FDC42EB0A9DD00FDCBB3 /* Instagram.app */;
@@ -122,6 +125,7 @@
 			packageReferences = (
 				C96A214E2EB1182300B32F96 /* XCRemoteSwiftPackageReference "SDWebImage" */,
 				C9099A732EB873DD00061E14 /* XCRemoteSwiftPackageReference "JSRingView" */,
+				C970AF902EB895D7005C015D /* XCRemoteSwiftPackageReference "IGStoryButtonKit" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = C950FDC52EB0A9DD00FDCBB3 /* Products */;
@@ -379,6 +383,14 @@
 				minimumVersion = 5.21.3;
 			};
 		};
+		C970AF902EB895D7005C015D /* XCRemoteSwiftPackageReference "IGStoryButtonKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/KaoruMuta/IGStoryButtonKit.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.2;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -396,6 +408,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = C96A214E2EB1182300B32F96 /* XCRemoteSwiftPackageReference "SDWebImage" */;
 			productName = SDWebImageMapKit;
+		};
+		C970AF912EB895D7005C015D /* IGStoryButtonKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C970AF902EB895D7005C015D /* XCRemoteSwiftPackageReference "IGStoryButtonKit" */;
+			productName = IGStoryButtonKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

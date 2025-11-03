@@ -9,13 +9,10 @@ import UIKit
 
 // TODO: Liked by userin imagei yoxdu
 // TODO: Representablelari temizlemek
-// TODO: NormalPost nan AdPostu birlestirmek
-// TODO: Post ve Threadsin Headerini genericlestirmek
 // TODO: PostDateLabel fix
 // TODO: 5h (timeLabel) in threads fix
 // TODO: ThreadsPost : vertical padding
 // TODO: ThreadsPost : image size and alignment
-// TODO: ThreadsReactionView un buttonlari niye unresponsivedir
 // TODO: NormalPostCell.post image : current page indicator label on top right
 // TODO: Stack viewlari lazy var-a kecirtmek belke
 // TODO: Configure -> layoutUI

@@ -8,10 +8,10 @@
 import UIKit
 
 struct StoryResponse {
-   let data: [Story]
+   let data: [StoryModel]
 }
 
-struct Story {
+struct StoryModel {
    let username, userPhoto, storyUrl: String?
    let isLive: Bool
    
@@ -33,7 +33,9 @@ struct Story {
       .init(),
       .init(),
       .init(),
-      .init()
+      .init(),
+      .init(),
+      .init(),
    ]
 }
 
@@ -124,9 +126,9 @@ class FeedVC: UIViewController {
    override func viewDidLoad() {
       super.viewDidLoad()
       viewModel.output = self
-      Task {
-         await viewModel.fetchAllPosts()
-      }
+//      Task {
+//         await viewModel.fetchAllPosts()
+//      }
       
       configureCollectionView()
    }
@@ -138,7 +140,8 @@ class FeedVC: UIViewController {
       
       collectionView.delegate = self
       collectionView.dataSource = self
-      collectionView.register(StoryCell.self, forCellWithReuseIdentifier: StoryCell.reuseId)
+      collectionView.register(StoriesCell.self, forCellWithReuseIdentifier: StoriesCell.reuseId)
+      collectionView.register(StoryItemCell.self, forCellWithReuseIdentifier: StoryItemCell.reuseId)
       collectionView.register(NormalPostCell.self, forCellWithReuseIdentifier: NormalPostCell.reuseId)
       collectionView.register(ThreadsPostsCell.self, forCellWithReuseIdentifier: ThreadsPostsCell.reuseID)
       collectionView.register(PeopleSuggestionCell.self, forCellWithReuseIdentifier: PeopleSuggestionCell.reuseId)
@@ -175,7 +178,9 @@ extension FeedVC: UICollectionViewDataSource {
       
       switch indexPath.section {
          case 0:
-            cell = collectionView.dequeueReusableCell(withReuseIdentifier: StoryCell.reuseId, for: indexPath) as! StoryCell
+            let c = collectionView.dequeueReusableCell(withReuseIdentifier: StoryItemCell.reuseId, for: indexPath) as! StoryItemCell
+            c.set(viewModel.allStories[indexPath.item])
+            cell = c
          default:
             switch viewModel.allPosts[indexPath.item].type {
                case .normal(let data):
@@ -208,24 +213,32 @@ extension FeedVC: UICollectionViewDelegate {
       print("viewModel.allPosts[indexPath.item]", viewModel.allPosts[indexPath.item].postType)
       return .zero
    }
+   
+   func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+   }
 }
 
 // MARK: - Compositional Layout
 
 extension FeedVC {
    private func createStoriesSection() -> NSCollectionLayoutSection {
-      let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
+      let itemSize = NSCollectionLayoutSize(
+         widthDimension: .absolute(80),
+         heightDimension: .absolute(80)
+      )
       
       let item = NSCollectionLayoutItem(layoutSize: itemSize)
-      item.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5)
+//      item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 5, bottom: 0, trailing: 0)
       
-      let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.5), heightDimension: .absolute(200))
+      let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(110))
       
       let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
-      group.contentInsets = .init(top: 0, leading: 15, bottom: 0, trailing: 2)
+//      group.contentInsets = .init(top: 0, leading: 15, bottom: 0, trailing: 0)
+      group.interItemSpacing = .fixed(10) // 👈 10pt spacing between items
       
       let section = NSCollectionLayoutSection(group: group)
-      section.orthogonalScrollingBehavior = .continuousGroupLeadingBoundary 
+      section.orthogonalScrollingBehavior = .continuous
+      section.contentInsets = .init(top: 0, leading: 15, bottom: 0, trailing: 0)
       
       return section
    }
@@ -291,5 +304,5 @@ struct FeedView: UIViewControllerRepresentable{
 }
 
 #Preview {
-   FeedView()
+   FeedVC()
 }
