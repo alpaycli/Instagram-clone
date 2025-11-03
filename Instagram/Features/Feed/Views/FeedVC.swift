@@ -73,8 +73,22 @@ struct NormalPostModel: Identifiable {
 }
 
 struct AdPostModel {
+   let id: String
+   let advertiserName, description: String
+   let advertiserPhoto, image, shoppingUrl: String?
+   let likeCount: Int
+   let likedBy: [String]
+   let createdAt: Date
    init(post: Post) {
-      
+      self.id = post.id ?? UUID().uuidString
+      self.advertiserName = post.advertiserName ?? "N/A"
+      self.advertiserPhoto = post.advertiserPhoto
+      self.description = post.description ?? ""
+      self.image = post.image
+      self.shoppingUrl = post.shoppingURL
+      self.likeCount = post.likeCount ?? 0
+      self.likedBy = post.likedBy ?? []
+      self.createdAt = post.createdAt ?? .now
    }
 }
 
@@ -126,7 +140,6 @@ class FeedVC: UIViewController {
       collectionView.dataSource = self
       collectionView.register(StoryCell.self, forCellWithReuseIdentifier: StoryCell.reuseId)
       collectionView.register(NormalPostCell.self, forCellWithReuseIdentifier: NormalPostCell.reuseId)
-      collectionView.register(AdPostCell.self, forCellWithReuseIdentifier: AdPostCell.reuseId)
       collectionView.register(ThreadsPostsCell.self, forCellWithReuseIdentifier: ThreadsPostsCell.reuseID)
       collectionView.register(PeopleSuggestionCell.self, forCellWithReuseIdentifier: PeopleSuggestionCell.reuseId)
    }
@@ -169,8 +182,10 @@ extension FeedVC: UICollectionViewDataSource {
                   let c = collectionView.dequeueReusableCell(withReuseIdentifier: NormalPostCell.reuseId, for: indexPath) as! NormalPostCell
                   c.set(data)
                   cell = c
-               case .ad(let x):
-                  cell = collectionView.dequeueReusableCell(withReuseIdentifier: AdPostCell.reuseId, for: indexPath) as! AdPostCell
+               case .ad(let data):
+                  let c = collectionView.dequeueReusableCell(withReuseIdentifier: NormalPostCell.reuseId, for: indexPath) as! NormalPostCell
+                  c.set(data)
+                  cell = c
                case .threads(let data):
                   let c = collectionView.dequeueReusableCell(withReuseIdentifier: ThreadsPostsCell.reuseID, for: indexPath) as! ThreadsPostsCell
                   c.set(data)

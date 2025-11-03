@@ -5,6 +5,7 @@
 //  Created by Alpay Calalli on 28.10.25.
 //
 
+import SafariServices
 import UIKit
 
 class NormalPostCell: UICollectionViewCell {
@@ -111,6 +112,32 @@ class NormalPostCell: UICollectionViewCell {
       return l
    }()
    
+   private var shoppingUrl: String = ""
+   private lazy var shopNowBannerView: ShopNowBannerView = {
+      let v = ShopNowBannerView()
+      
+      let shopAdGesture = UITapGestureRecognizer(target: self, action: #selector(handleShopNowTap(_:)))
+      v.addGestureRecognizer(shopAdGesture)
+      
+      return v
+   }()
+      
+   @objc func handleShopNowTap(_ sender: UITapGestureRecognizer) {
+      if let url = URL(string: shoppingUrl) {
+          let vc = SFSafariViewController(url: url)
+          vc.delegate = self
+
+         if var topController = UIApplication.shared.keyWindow?.rootViewController {
+            while let presentedViewController = topController.presentedViewController {
+                topController = presentedViewController
+            }
+
+            topController.present(vc, animated: true, completion: nil)
+         }
+
+      }
+   }
+   
    override init(frame: CGRect) {
       super.init(frame: frame)
 //      backgroundColor = .blue
@@ -192,8 +219,40 @@ class NormalPostCell: UICollectionViewCell {
          .bold("\(model.likeCount) others", fontSize: 13)
       descriptionLabel.attributedText = NSMutableAttributedString()
          .bold(model.username, fontSize: 13)
-         .normal(model.description, fontSize: 13)
+         .normal(" \(model.description)", fontSize: 13)
       postDateLabel.text = model.createdAt.formatted()
+   }
+   
+   func set(_ model: AdPostModel) {
+      if let url = model.advertiserPhoto {
+         headerView.set(
+            title: model.advertiserName,
+            subtitle: "Sponsored",
+            avatarUrl: url
+         )
+      }
+      
+      if let adPostImage = model.image {
+         images.append(adPostImage)
+      }
+      if let url = model.shoppingUrl {
+         shoppingUrl = url
+      }
+      
+      pageControl.numberOfPages = 0
+      pageControl.currentPage = 0
+      
+      likedByLabel.attributedText = NSMutableAttributedString()
+         .normal("Liked by ", fontSize: 13)
+         .bold(model.likedBy.first ?? "N/A", fontSize: 13)
+         .normal(" and ", fontSize: 13)
+         .bold("\(model.likeCount) others", fontSize: 13)
+      descriptionLabel.attributedText = NSMutableAttributedString()
+         .bold(model.advertiserName, fontSize: 13)
+         .normal(" \(model.description)", fontSize: 13)
+      postDateLabel.text = model.createdAt.formatted()
+      
+      configureAdBannerView()
    }
    
    func set(
@@ -296,6 +355,21 @@ class NormalPostCell: UICollectionViewCell {
       ])
 
    }
+   
+   private func configureAdBannerView() {
+      
+      // Her ehtimal, basqa (sehv) yerden cagirilanda return elesin deye guard check
+      guard !shoppingUrl.isEmpty else { return }
+      
+      contentView.addSubview(shopNowBannerView)
+      NSLayoutConstraint.activate([
+         shopNowBannerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+         shopNowBannerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+         shopNowBannerView.bottomAnchor.constraint(equalTo: postImagesCollectionView.bottomAnchor, constant: 0),
+         shopNowBannerView.heightAnchor.constraint(equalToConstant: 38),
+      ])
+
+   }
 }
 
 extension NormalPostCell: UICollectionViewDataSource {
@@ -321,6 +395,8 @@ extension NormalPostCell: UICollectionViewDelegate {
    }
 
 }
+
+extension NormalPostCell: SFSafariViewControllerDelegate {}
 
 class PostImageCell: UICollectionViewCell {
    static let reuseId = "PostImageCell"
@@ -360,4 +436,3 @@ class PostImageCell: UICollectionViewCell {
       imageView.downloadImage(fromURL: imageUrl)
    }
 }
-
