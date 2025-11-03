@@ -11,36 +11,12 @@ class NormalPostCell: UICollectionViewCell {
    static let reuseId = "NormalPostCell"
       
    private var images: [String] = []
-   private lazy var profileImageView: GFAvatarImageView = {
-      let imageView = GFAvatarImageView(frame: .zero)
-            
-      imageView.layer.cornerRadius = 16
-      imageView.clipsToBounds = true
-      
-      imageView.translatesAutoresizingMaskIntoConstraints = false
-      return imageView
-
-   }()
    
-   private lazy var nameLabel: IGTitleLabel = {
-      let l = IGTitleLabel(textAlignment: .left, fontSize: 13)
+   private lazy var headerView: PostHeaderView = {
+      let v = PostHeaderView()
       
-      return l
-   }()
-   
-   private lazy var locationLabel: IGSecondaryTitleLabel = {
-      let l = IGSecondaryTitleLabel(fontSize: 11)
-      
-      return l
-   }()
-   
-   private lazy var moreButton: UIButton = {
-      let btn = UIButton()
-      btn.setImage(PostActionIcon.more, for: .normal)
-      btn.tintColor = .label
-      
-      btn.translatesAutoresizingMaskIntoConstraints = false
-      return btn
+      v.translatesAutoresizingMaskIntoConstraints = false
+      return v
    }()
    
    private lazy var postImageView: GFAvatarImageView = {
@@ -181,14 +157,14 @@ class NormalPostCell: UICollectionViewCell {
        postImagesCollectionView.reloadData()
 
        // Reset images
-       profileImageView.image = nil
+//       profileImageView.image = nil
        postImageView.image = nil
 
-       profileImageView.cancelImageDownload()
+//       profileImageView.cancelImageDownload()
        postImageView.cancelImageDownload()
 
-       nameLabel.text = nil
-       locationLabel.text = nil
+//       nameLabel.text = nil
+//       locationLabel.text = nil
        likedByLabel.text = nil
        descriptionLabel.text = nil
        postDateLabel.text = nil
@@ -198,15 +174,17 @@ class NormalPostCell: UICollectionViewCell {
 
    func set(_ model: NormalPostModel) {
       if let url = model.userPhoto {
-         profileImageView.downloadImage(fromURL: url)
+         headerView.set(
+            title: model.username,
+            subtitle: model.location,
+            avatarUrl: url
+         )
       }
       images = model.images.filter({ !$0.isEmpty })
       
       pageControl.numberOfPages = model.images.count
       pageControl.currentPage = 0
       
-      nameLabel.text = model.username
-      locationLabel.text = model.location
       likedByLabel.attributedText = NSMutableAttributedString()
          .normal("Liked by ", fontSize: 13)
          .bold(model.likedBy.first ?? "N/A", fontSize: 13)
@@ -228,9 +206,11 @@ class NormalPostCell: UICollectionViewCell {
       description: String,
       postDateLabel: Date
    ) {
-      nameLabel.text = name
-      locationLabel.text = location
-      
+      headerView.set(
+         title: name,
+         subtitle: location,
+         avatarUrl: profileImageUrl
+      )
       likedByLabel.attributedText = NSMutableAttributedString()
          .normal("Liked by ", fontSize: 13)
          .bold(likedBy, fontSize: 13)
@@ -241,7 +221,6 @@ class NormalPostCell: UICollectionViewCell {
          .bold(name, fontSize: 13)
          .normal(description, fontSize: 13)
       
-      profileImageView.downloadImage(fromURL: profileImageUrl)
       postImageView.downloadImage(fromURL: postImageUrl)
       
       pageControl.numberOfPages = 3
@@ -251,7 +230,7 @@ class NormalPostCell: UICollectionViewCell {
    }
    
    private func layoutUI() {
-      contentView.addSubviews(profileImageView, nameLabel, locationLabel, moreButton, postImageView, postImagesCollectionView, likeButton, commentButton, shareButton, pageControl, saveButton, likedByLabel, descriptionLabel, postDateLabel)
+      contentView.addSubviews(headerView, postImageView, postImagesCollectionView, likeButton, commentButton, shareButton, pageControl, saveButton, likedByLabel, descriptionLabel, postDateLabel)
       
       if let layout = postImagesCollectionView.collectionViewLayout as? UICollectionViewFlowLayout {
           layout.itemSize = CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.width)
@@ -263,23 +242,12 @@ class NormalPostCell: UICollectionViewCell {
       
       let leadingPadding: CGFloat = 14
       NSLayoutConstraint.activate([
-         profileImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20),
-         profileImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: leadingPadding),
-         profileImageView.widthAnchor.constraint(equalToConstant: 32),
-         profileImageView.heightAnchor.constraint(equalToConstant: 32),
+         headerView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 12),
+         headerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 0),
+         headerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+         headerView.heightAnchor.constraint(equalToConstant: 44),
          
-         nameLabel.topAnchor.constraint(equalTo: profileImageView.topAnchor),
-         nameLabel.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: 12),
-         nameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -leadingPadding),
-         
-         locationLabel.bottomAnchor.constraint(equalTo: profileImageView.bottomAnchor),
-         locationLabel.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: 12),
-         locationLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -leadingPadding),
-         
-         moreButton.topAnchor.constraint(equalTo: profileImageView.topAnchor),
-         moreButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -leadingPadding),
-         
-         postImagesCollectionView/*postImageView*/.topAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: 10),
+         postImagesCollectionView/*postImageView*/.topAnchor.constraint(equalTo: headerView.bottomAnchor, constant: 10),
          postImagesCollectionView/*postImageView*/.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
          postImagesCollectionView/*postImageView*/.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
 //         postImagesCollectionView.heightAnchor.constraint(equalToConstant: 375),

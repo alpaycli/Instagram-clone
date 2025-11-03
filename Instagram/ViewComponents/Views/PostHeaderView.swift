@@ -1,5 +1,5 @@
 //
-//  ThreadsHeaderView.swift
+//  PostHeaderView.swift
 //  Instagram
 //
 //  Created by Alpay Calalli on 30.10.25.
@@ -83,10 +83,16 @@ final class PostHeaderView: UIView {
       ])
    }
    
-   func set(title: String, subtitle: String, avatar: UIImage?) {
+   func set(title: String, subtitle: String?, avatar: UIImage?) {
       titleLabel.text = title
       subtitleLabel.text = subtitle
       avatarImageView.image = avatar
+   }
+   
+   func set(title: String, subtitle: String?, avatarUrl: String) {
+      titleLabel.text = title
+      subtitleLabel.text = subtitle
+      avatarImageView.downloadImage(fromURL: avatarUrl)
    }
    
    @objc private func optionsTapped() {

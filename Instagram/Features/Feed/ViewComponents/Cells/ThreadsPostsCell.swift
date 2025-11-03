@@ -6,8 +6,8 @@ final class ThreadsPostsCell: UICollectionViewCell {
    
    private var model: ThreadsModel = .init(post: PostModel.mockData[1].data)
      
-   private lazy var headerView: ThreadsHeaderView = {
-      let v = ThreadsHeaderView()
+   private lazy var headerView: PostHeaderView = {
+      let v = PostHeaderView()
       
       v.translatesAutoresizingMaskIntoConstraints = false
       return v
