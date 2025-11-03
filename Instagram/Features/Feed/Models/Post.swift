@@ -2,20 +2,20 @@ import Foundation
 
 // MARK: - Welcome
 struct PostResponse: Codable {
-    let data: [PostModel]
+   let data: [PostModel]
 }
 
 // MARK: - Datum
 struct PostModel: Codable {
-    let postType: String
-    let data: Post
+   let postType: String
+   let data: Post
    
    var type: PostType {
       switch postType {
          case "normal": .normal(.init(post: data))
          case "ad": .ad(.init(post: data))
          case "threads": .threads(.init(post: data))
-         case "peopleSuggestion": .peopleSuggestion(.init(post: data))
+         case "people_suggestion": .peopleSuggestion(.init(post: data))
          default: .normal(.init(post: data))
       }
    }
@@ -55,57 +55,52 @@ struct PostModel: Codable {
             "https://t4.ftcdn.net/jpg/04/57/50/41/360_F_457504159_nEcxnfFqE9O1jaogLTh4bviUPPQ7xncW.jpg",
             "https://t4.ftcdn.net/jpg/04/57/50/41/360_F_457504159_nEcxnfFqE9O1jaogLTh4bviUPPQ7xncW.jpg"
          ]
-      ))
+      )),
+      .init(
+         postType: "people_suggestion",
+         data: .init(
+            suggestions: [
+               .init(fullName: "Clippers BC", username: "clippers", photo: "https://t4.ftcdn.net/jpg/04/57/50/41/360_F_457504159_nEcxnfFqE9O1jaogLTh4bviUPPQ7xncW.jpg"),
+               .init(fullName: "kawhileonard", username: "kawhileonard", photo: ""),
+               .init(fullName: "Mark Cuban", username: "mkkk333", photo: "https://t4.ftcdn.net/jpg/04/57/50/41/360_F_457504159_nEcxnfFqE9O1jaogLTh4bviUPPQ7xncW.jpg")
+            ]
+         )
+      ),
+      .init(postType: "normal", data:       .init(
+         id: "id5",
+         description: "One Another post description",
+         images: [
+            "https://t4.ftcdn.net/jpg/04/57/50/41/360_F_457504159_nEcxnfFqE9O1jaogLTh4bviUPPQ7xncW.jpg",
+            "https://t4.ftcdn.net/jpg/04/57/50/41/360_F_457504159_nEcxnfFqE9O1jaogLTh4bviUPPQ7xncW.jpg"
+         ]
+      )),
 
+      
    ]
 }
 
 // MARK: - DataClass
 struct Post: Codable {
-    let id, advertiserName: String?
-    let advertiserPhoto, image: String?
-    let shoppingURL: String?
-    let likeCount: Int?
-    let likedBy: [String]?
-    let description, username: String?
+   let id, advertiserName: String?
+   let advertiserPhoto, image: String?
+   let shoppingURL: String?
+   let likeCount: Int?
+   let likedBy: [String]?
+   let description, username: String?
    let createdAt: Date?
-    let userPhoto: String?
-    let location: String?
-    let images: [String]?
-    let threadTitle: String?
-    let joinCount: Int?
-    let posts: [ThreadPost]?
-    let suggestions: [PeopleSuggestionModel]?
-
-    enum CodingKeys: String, CodingKey {
-        case id, advertiserName, advertiserPhoto, image
-        case shoppingURL = "shoppingUrl"
-        case likeCount, likedBy, description, createdAt, username, userPhoto, location, images, threadTitle, joinCount, posts, suggestions
-    }
+   let userPhoto: String?
+   let location: String?
+   let images: [String]?
+   let threadTitle: String?
+   let joinCount: Int?
+   let posts: [ThreadPost]?
+   let suggestions: [PeopleSuggestion]?
    
-//   init(
-//      id: String,
-//      username: String? = nil,
-//      userPhoto: String? = nil,
-//      location: String? = nil,
-//      description: String? = nil,
-//      createdAt: Date? = nil,
-//      advertiserName: String? = nil,
-//      images: [String]? = nil,
-//      likedBy: [String]? = nil,
-//      likeCount: Int? = nil
-//   ) {
-//      self.id = id
-//      self.username = username
-//      self.userPhoto = userPhoto
-//      self.location = location
-//      self.description = description
-//      self.createdAt = createdAt
-//      self.advertiserName = advertiserName
-//      self.images = images
-//      self.likedBy = likedBy
-//      self.likeCount = likeCount
-//   }
+   enum CodingKeys: String, CodingKey {
+      case id, advertiserName, advertiserPhoto, image
+      case shoppingURL = "shoppingUrl"
+      case likeCount, likedBy, description, createdAt, username, userPhoto, location, images, threadTitle, joinCount, posts, suggestions
+   }
    
    init(
       id: String? = nil,
@@ -124,7 +119,7 @@ struct Post: Codable {
       threadTitle: String? = nil,
       joinCount: Int? = nil,
       posts: [ThreadPost]? = nil,
-      suggestions: [PeopleSuggestionModel]? = nil
+      suggestions: [PeopleSuggestion]? = nil
    ) {
       self.id = id
       self.advertiserName = advertiserName
@@ -150,13 +145,13 @@ struct Post: Codable {
 
 // MARK: - Post
 struct ThreadPost: Codable {
-    let id: String
-    let ownerPhoto: String
+   let id: String
+   let ownerPhoto: String
    let username: String
    let createdAt: Date?
-    let image: String?
-    let text: String?
-    let likeCount, commentCount, repostCount, sharedCount: Int
+   let image: String?
+   let text: String?
+   let likeCount, commentCount, repostCount, sharedCount: Int
    
    init(id: String, ownerPhoto: String, username: String, createdAt: Date?, image: String?, text: String?, likeCount: Int, commentCount: Int, repostCount: Int, sharedCount: Int) {
       self.id = id
@@ -172,7 +167,7 @@ struct ThreadPost: Codable {
    }
    
    
-/// Mock
+   /// Mock
    init(
       id: String = "",
       ownerPhoto: String = "",
@@ -195,11 +190,22 @@ struct ThreadPost: Codable {
       self.repostCount = repostCount
       self.sharedCount = 0
    }
-
+   
 }
 
 // MARK: - Suggestion
-struct PeopleSuggestionModel: Codable {
-    let photo: String
-    let fullName, username: String
+
+struct PeopleSuggestion: Codable {
+   let fullName, username: String
+   let photo: String
+}
+
+struct PeopleSuggestionsModel {
+   let suggestions: [PeopleSuggestion]
+   
+   init() { suggestions = [] }
+   
+   init(post: Post) {
+      self.suggestions = post.suggestions ?? []
+   }
 }

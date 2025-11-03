@@ -1,6 +1,15 @@
 {
-  "originHash" : "990602f943d142d26b1a5421abe2a243e2e1077d090e31e151c33e3ec768723e",
+  "originHash" : "43c3f0985acd43259d5ffa01bf0b58c86424dd8f659580f834e1080ba557dfd5",
   "pins" : [
+    {
+      "identity" : "jsringview",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/jsantolaria/JSRingView",
+      "state" : {
+        "revision" : "13a4507f4f103d3ee689898e0ae609b2e6395f12",
+        "version" : "0.1.0"
+      }
+    },
     {
       "identity" : "sdwebimage",
       "kind" : "remoteSourceControl",

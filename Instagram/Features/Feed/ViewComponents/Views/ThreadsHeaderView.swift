@@ -8,7 +8,7 @@
 
 import UIKit
 
-final class ThreadsHeaderView: UIView {
+final class PostHeaderView: UIView {
    
    // MARK: - External Action
    var onOptionsTapped: (() -> Void)?
@@ -59,7 +59,6 @@ final class ThreadsHeaderView: UIView {
       return stack
    }()
    
-   // MARK: - Init
    override init(frame: CGRect) {
       super.init(frame: frame)
       layoutUI()

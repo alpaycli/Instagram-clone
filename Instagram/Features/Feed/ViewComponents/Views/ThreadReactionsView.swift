@@ -25,12 +25,10 @@ class ThreadReactionsView: UIView {
    }
    
    func set(_ postData: ThreadPost) {
-      print("i got set")
-      
       likeItemView.set(image: PostActionIcon.like, label: "\(postData.likeCount)", buttonAction: {print("like tapped")})
-      commentItemView.set(image: PostActionIcon.comment, label: "\(postData.commentCount)", buttonAction: {print("like tapped")})
-      repostItemView.set(image: PostActionIcon.like, label: "\(postData.repostCount)", buttonAction: {print("like tapped")})
-      shareItemView.set(image: PostActionIcon.share, label: "\(postData.sharedCount)", buttonAction: {print("like tapped")})
+      commentItemView.set(image: PostActionIcon.comment, label: "\(postData.commentCount)", buttonAction: {print("comment tapped")})
+      repostItemView.set(image: PostActionIcon.repost, label: "\(postData.repostCount)", buttonAction: {print("repost tapped")})
+      shareItemView.set(image: PostActionIcon.share, label: "\(postData.sharedCount)", buttonAction: {print("share tapped")})
    }
    
    private func configure() {

@@ -88,96 +88,12 @@ struct ThreadsModel {
       self.posts = post.posts ?? []
    }
 }
-//
-//struct ThreadsPostModel {
-//   let id: String
-//   let ownerPhoto, image, text: String
-//   let likeCount, commentCount, repostCount, sharedCount: Int
-//   let createdAt: Date
-//}
-
-struct PeopleSuggestionPostModel {
-   init(post: Post) {
-      
-   }
-}
-
-/*
-{
-   "postType": "normal",
-   "id": "n1",
-   "username": "ali.k",
-   "userPhoto": "https://i.pravatar.cc/80?img=12",
-   "location": "Baku, Azerbaijan",
-   "images": ["https://picsum.photos/seed/n1a/800/800"],
-   "likeCount": 124,
-   "likedBy": ["ayse.oz", "mehmet34"],
-   "description": "Güzel bir gün ☀ ",
-   "createdAt": "2025-09-10T14:23:00.000Z"
-}
-
-{
-   "postType": "ad",
-   "id": "ad1",
-   "advertiserName": "BrandX",
-   "advertiserPhoto": "https://i.pravatar.cc/80?img=45",
-   "image": "https://picsum.photos/seed/ad1/1000/800",
-   "shoppingUrl": "https://shop.example.com/product/12345",
-   "likeCount": 45,
-   "likedBy": ["user1", "user2"],
-   "description": "Yeni sezon indirimleri başladı! Kaçırma.",
-   "createdAt": "2025-09-09T10:00:00.000Z"
-}
-{
-   "postType": "threads",
-   "id": "t1",
-   "threadTitle": "Sabah kahvesi sohbeti",
-   "joinCount": 256,
-   "posts": [
-{
-   "id": "t1p1",
-   "ownerPhoto": "https://i.pravatar.cc/80?img=21",
-   "username": "coffee_lover",
-   "createdAt": "2025-09-11T07:10:00.000Z",
-   "image": "https://picsum.photos/seed/t1p1/600/400",
-   "text": null,
-   "likeCount": 12,
-   "commentCount": 3,
-   "repostCount": 1,
-   "sharedCount": 0
-},
-{
-   "id": "t1p2",
-   "ownerPhoto": "https://i.pravatar.cc/80?img=22",
-   "username": "daily.reader",
-   "createdAt": "2025-09-11T07:20:00.000Z",
-   "image": null,
-   "text": "Bugün hangi kitabı önerirsiniz?",
-   "likeCount": 34,
-   "commentCount": 10,
-   "repostCount": 2,
-   "sharedCount": 1
-}
-]
-}
-{
-   "postType": "people_suggestion",
-   "id": "ps1",
-   "suggestions": [
-   { "photo": "https://i.pravatar.cc/80?img=2", "firstName": "Seda", "lastName": "Yılmaz",
-   "username": "seda_y" },
-   { "photo": "https://i.pravatar.cc/80?img=3", "firstName": "Ozan", "lastName": "Kaya",
-   "username": "ozan_k" }
-   ]
-}
-
-*/
 
 enum PostType {
    case normal(NormalPostModel)
    case ad(AdPostModel)
    case threads(ThreadsModel)
-   case peopleSuggestion(PeopleSuggestionPostModel)
+   case peopleSuggestion(PeopleSuggestionsModel)
 }
 
 class FeedVC: UIViewController {
@@ -197,7 +113,6 @@ class FeedVC: UIViewController {
       Task {
          await viewModel.fetchAllPosts()
       }
-      view.backgroundColor = .red
       
       configureCollectionView()
    }
@@ -207,12 +122,13 @@ class FeedVC: UIViewController {
       view.addSubview(collectionView)
       
       
-//      cv.delegate = self
+      collectionView.delegate = self
       collectionView.dataSource = self
       collectionView.register(StoryCell.self, forCellWithReuseIdentifier: StoryCell.reuseId)
       collectionView.register(NormalPostCell.self, forCellWithReuseIdentifier: NormalPostCell.reuseId)
       collectionView.register(AdPostCell.self, forCellWithReuseIdentifier: AdPostCell.reuseId)
       collectionView.register(ThreadsPostsCell.self, forCellWithReuseIdentifier: ThreadsPostsCell.reuseID)
+      collectionView.register(PeopleSuggestionCell.self, forCellWithReuseIdentifier: PeopleSuggestionCell.reuseId)
    }
    
    private func createCompositionalLayout() -> UICollectionViewCompositionalLayout {
@@ -249,9 +165,9 @@ extension FeedVC: UICollectionViewDataSource {
             cell = collectionView.dequeueReusableCell(withReuseIdentifier: StoryCell.reuseId, for: indexPath) as! StoryCell
          default:
             switch viewModel.allPosts[indexPath.item].type {
-               case .normal(let model):
+               case .normal(let data):
                   let c = collectionView.dequeueReusableCell(withReuseIdentifier: NormalPostCell.reuseId, for: indexPath) as! NormalPostCell
-                  c.set(model)
+                  c.set(data)
                   cell = c
                case .ad(let x):
                   cell = collectionView.dequeueReusableCell(withReuseIdentifier: AdPostCell.reuseId, for: indexPath) as! AdPostCell
@@ -259,13 +175,23 @@ extension FeedVC: UICollectionViewDataSource {
                   let c = collectionView.dequeueReusableCell(withReuseIdentifier: ThreadsPostsCell.reuseID, for: indexPath) as! ThreadsPostsCell
                   c.set(data)
                   cell = c
-               case .peopleSuggestion(let x):
-                  break
+               case .peopleSuggestion(let data):
+                  print("people suggestion cell should appear")
+                  let c = collectionView.dequeueReusableCell(withReuseIdentifier: PeopleSuggestionCell.reuseId, for: indexPath) as! PeopleSuggestionCell
+                  c.set(data.suggestions)
+                  cell = c
             }
       }
 
       
       return cell
+   }
+}
+
+extension FeedVC: UICollectionViewDelegate {
+   func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+      print("viewModel.allPosts[indexPath.item]", viewModel.allPosts[indexPath.item].postType)
+      return .zero
    }
 }
 
@@ -315,6 +241,7 @@ extension FeedVC {
        let groupSize = NSCollectionLayoutSize(
            widthDimension: .fractionalWidth(1.0),
            heightDimension: .estimated(400)
+           //            heightDimension: .estimated(bunu 5 qoyanda post cell qalir normal amma o biriler pozulurb. ESLINDE mence threads container viewa fixed height versek duzele biler cox shey. Eynisi threadsin contentViewu ucun de.)
        )
        let group = NSCollectionLayoutGroup.vertical(
            layoutSize: groupSize,

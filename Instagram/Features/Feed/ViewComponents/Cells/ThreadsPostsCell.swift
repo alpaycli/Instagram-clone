@@ -46,6 +46,7 @@ final class ThreadsPostsCell: UICollectionViewCell {
        collectionView.decelerationRate = .fast
        collectionView.contentInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
        collectionView.register(ThreadItemCell.self, forCellWithReuseIdentifier: ThreadItemCell.reuseID)
+       collectionView.register(ThreadSeeMoreCell.self, forCellWithReuseIdentifier: ThreadSeeMoreCell.reuseID)
       
       collectionView.translatesAutoresizingMaskIntoConstraints = false
        return collectionView
@@ -72,7 +73,7 @@ final class ThreadsPostsCell: UICollectionViewCell {
          containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 0),
          containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: 0),
          containerView.topAnchor.constraint(equalTo: contentView.topAnchor),
-         containerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8),
+         containerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: /*-8*/ 0),
          
          headerView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 12),
          headerView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
@@ -97,7 +98,7 @@ final class ThreadsPostsCell: UICollectionViewCell {
       self.model = model
       let subtitle = model.joinCount > 1 ? "\(model.joinCount) others joined" : ""
       headerView.set(title: "Threads", subtitle: subtitle, avatar: nil)
-      pageControl.numberOfPages = model.posts.count
+      pageControl.numberOfPages = model.posts.count + 1
       pageControl.currentPage = 0
       collectionView.reloadData()
    }
@@ -106,14 +107,22 @@ final class ThreadsPostsCell: UICollectionViewCell {
 // MARK: - UICollectionViewDataSource
 extension ThreadsPostsCell: UICollectionViewDataSource {
    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-      model.posts.count
+      model.posts.count + 1
    }
    
    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-      let cell = collectionView.dequeueReusableCell(
-         withReuseIdentifier: ThreadItemCell.reuseID,
-         for: indexPath
-      ) as! ThreadItemCell
+      if indexPath.item == model.posts.count {
+         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ThreadSeeMoreCell.reuseID, for: indexPath) as! ThreadSeeMoreCell
+         // Mock data
+         cell.set(profileImages: [
+            "https://t4.ftcdn.net/jpg/04/57/50/41/360_F_457504159_nEcxnfFqE9O1jaogLTh4bviUPPQ7xncW.jpg",
+            "https://t4.ftcdn.net/jpg/04/57/50/41/360_F_457504159_nEcxnfFqE9O1jaogLTh4bviUPPQ7xncW.jpg",
+            "https://t4.ftcdn.net/jpg/04/57/50/41/360_F_457504159_nEcxnfFqE9O1jaogLTh4bviUPPQ7xncW.jpg"
+         ])
+         return cell
+      }
+      
+      let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ThreadItemCell.reuseID, for: indexPath) as! ThreadItemCell
       cell.set(model.posts[indexPath.item])
       return cell
    }
@@ -364,3 +373,149 @@ struct ThreadItemCellView: UIViewRepresentable {
    }
 }
 
+class ThreadSeeMoreCell: UICollectionViewCell {
+   static let reuseID = "ThreadSeeMoreCell"
+   
+//   lazy var width: NSLayoutConstraint = {
+//       let width = contentView.widthAnchor.constraint(equalToConstant: bounds.size.width)
+//       width.isActive = true
+//       return width
+//   }()
+//
+//   override func systemLayoutSizeFitting(_ targetSize: CGSize, withHorizontalFittingPriority horizontalFittingPriority: UILayoutPriority, verticalFittingPriority: UILayoutPriority) -> CGSize {
+//       width.constant = bounds.size.width
+//       return contentView.systemLayoutSizeFitting(CGSize(width: targetSize.width, height: 1))
+//   }
+   
+   // Store the height constraint so we can manage it
+//   private var postImageHeightConstraint: NSLayoutConstraint?
+   
+   private lazy var generalStackView: UIStackView = {
+      let sv = UIStackView()
+      sv.axis = .vertical
+      sv.spacing = 18
+      sv.alignment = .center
+      sv.distribution = .fillEqually
+      
+      sv.addArrangedSubview(profileImagesStackView)
+      sv.addArrangedSubview(descriptionLabel)
+      sv.addArrangedSubview(seeMoreButton)
+      
+      descriptionLabel.heightAnchor.constraint(equalToConstant: 30).isActive = true
+      seeMoreButton.heightAnchor.constraint(equalToConstant: 15).isActive = true
+      
+      sv.translatesAutoresizingMaskIntoConstraints = false
+      return sv
+   }()
+   
+   private lazy var profileImagesStackView: UIStackView = {
+      let sv = UIStackView()
+      sv.axis = .horizontal
+      sv.spacing = -14
+      sv.alignment = .center
+      sv.distribution = .fill
+      
+      sv.translatesAutoresizingMaskIntoConstraints = false
+      return sv
+   }()
+   
+   private lazy var seeMoreButton: UIButton = {
+      let btn = UIButton()
+      btn.setTitle("See More", for: .normal)
+      btn.titleLabel?.font = UIFont.systemFont(ofSize: 12, weight: .bold)
+      btn.setTitleColor(.init(hexString: "#4A5CF9"), for: .normal)
+      
+      btn.translatesAutoresizingMaskIntoConstraints = false
+      return btn
+   }()
+   
+   private lazy var descriptionLabel: IGSecondaryTitleLabel = {
+      let l = IGSecondaryTitleLabel()
+      l.font = .systemFont(ofSize: 12)
+      l.numberOfLines = 0
+      l.text = """
+         See more from accounts you might 
+         know on Threads
+         """
+      l.textAlignment = .center
+      
+      l.translatesAutoresizingMaskIntoConstraints = false
+      return l
+   }()
+   
+   override init(frame: CGRect) {
+      super.init(frame: frame)
+      layoutUI()
+   }
+   
+   required init?(coder: NSCoder) {
+      fatalError("init(coder:) has not been implemented")
+   }
+   
+   // CRITICAL: Reset cell state when reused
+//   override func prepareForReuse() {
+//       super.prepareForReuse()
+//
+//       // Reset images to prevent wrong images appearing
+//       profileImageView.image = nil
+//       postImageView.image = nil
+//
+//       // Cancel any ongoing image downloads
+//       profileImageView.cancelImageDownload() // Implement this in GFAvatarImageView
+//       postImageView.cancelImageDownload()
+//
+//       // Remove postImageView from stack if it's there
+//       if postImageView.superview != nil {
+//           generalStackView.removeArrangedSubview(postImageView)
+//           postImageView.removeFromSuperview()
+//       }
+//
+//       // Deactivate the height constraint
+//       postImageHeightConstraint?.isActive = false
+//       postImageHeightConstraint = nil
+//
+//       // Reset labels
+//       nameLabel.text = nil
+//       timeLabel.text = nil
+//       descriptionLabel.text = nil
+//   }
+   
+   func set(profileImages: [String]) {
+      guard profileImagesStackView.arrangedSubviews.isEmpty else { return }
+      
+      profileImagesStackView.heightAnchor.constraint(equalToConstant: 33).isActive = true
+      for imageUrl in profileImages {
+         let imageView = GFAvatarImageView(frame: .zero)
+         imageView.downloadImage(fromURL: imageUrl)
+         imageView.clipsToBounds = true
+         
+         imageView.heightAnchor.constraint(equalToConstant: 32).isActive = true // 32
+         imageView.widthAnchor.constraint(equalToConstant: 32).isActive = true
+         
+         imageView.layer.cornerRadius = 16
+         imageView.layer.borderWidth = 3
+         imageView.layer.borderColor = UIColor.systemBackground.cgColor
+//         imageView.addOuterBorder(color: .green, width: 3)
+         
+         profileImagesStackView.addArrangedSubview(imageView)
+      }
+      print("generalstackview", generalStackView.arrangedSubviews.count)
+//      print("profilesstackview", profileImagesStackView.arrangedSubviews.count)
+//      generalStackView.addArrangedSubview(profileImagesStackView)
+   }
+   
+   private func layoutUI() {
+      contentView.layer.cornerRadius = 16
+      contentView.backgroundColor = .white
+      contentView.layer.borderWidth = 1
+      contentView.layer.borderColor = UIColor.systemGray6.cgColor
+      
+      contentView.addSubviews(generalStackView)
+      
+      NSLayoutConstraint.activate([
+         generalStackView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+         generalStackView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+         generalStackView.heightAnchor.constraint(equalToConstant: 140)
+      ])
+   }
+}

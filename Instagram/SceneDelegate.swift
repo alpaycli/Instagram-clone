@@ -15,6 +15,12 @@ import UIKit
 // TODO: 5h (timeLabel) in threads fix
 // TODO: ThreadsPost : vertical padding
 // TODO: ThreadsPost : image size and alignment
+// TODO: ThreadsReactionView un buttonlari niye unresponsivedir
+// TODO: NormalPostCell.post image : current page indicator label on top right
+// TODO: Stack viewlari lazy var-a kecirtmek belke
+// TODO: Configure -> layoutUI
+// TODO: Accessibility - dynamic type
+// TODO: ThreadSeeMoreCell eslinde problemlidi layout setupdi
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 

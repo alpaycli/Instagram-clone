@@ -56,7 +56,6 @@ class ThreadReactionItemView: UIView {
    }
    
    func set(image: UIImage, label: String, buttonAction: @escaping () -> Void) {
-      print("i got set on bottom too")
       self.actionButton.setImage(image, for: .normal)
       self.label.text = label
       self.buttonAction = buttonAction
@@ -69,12 +68,6 @@ class ThreadReactionItemView: UIView {
          actionButton.topAnchor.constraint(equalTo: topAnchor),
          actionButton.leadingAnchor.constraint(equalTo: leadingAnchor),
          actionButton.bottomAnchor.constraint(equalTo: bottomAnchor),
-         
-//         actionButton.widthAnchor.constraint(equalToConstant: 34),
-//         actionButton.heightAnchor.constraint(equalToConstant: 34),
-//         label.widthAnchor.constraint(equalToConstant: 34),
-//         label.heightAnchor.constraint(equalToConstant: 34),
-//         
          
          label.topAnchor.constraint(equalTo: topAnchor),
          label.leadingAnchor.constraint(equalTo: actionButton.trailingAnchor, constant: 8),
