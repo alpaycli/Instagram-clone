@@ -20,14 +20,21 @@ class NormalPostCell: UICollectionViewCell {
       return v
    }()
    
-   private lazy var postImageView: GFAvatarImageView = {
-      let imageView = GFAvatarImageView(frame: .zero)
-            
-//      imageView.clipsToBounds = true
+   private lazy var pageIndicatorView: PostPageIndicatorView = {
+      let v = PostPageIndicatorView(totalPageCount: images.count, currentIndex: 0)
       
-      imageView.translatesAutoresizingMaskIntoConstraints = false
-      return imageView
+      v.translatesAutoresizingMaskIntoConstraints = false
+      return v
    }()
+   
+//   private lazy var postImageView: GFAvatarImageView = {
+//      let imageView = GFAvatarImageView(frame: .zero)
+//            
+////      imageView.clipsToBounds = true
+//      
+//      imageView.translatesAutoresizingMaskIntoConstraints = false
+//      return imageView
+//   }()
    
    private lazy var postImagesCollectionView: UICollectionView = {
        let layout = UICollectionViewFlowLayout()
@@ -140,7 +147,6 @@ class NormalPostCell: UICollectionViewCell {
    
    override init(frame: CGRect) {
       super.init(frame: frame)
-//      backgroundColor = .blue
       layoutUI()
    }
    
@@ -185,10 +191,10 @@ class NormalPostCell: UICollectionViewCell {
 
        // Reset images
 //       profileImageView.image = nil
-       postImageView.image = nil
+//       postImageView.image = nil
 
 //       profileImageView.cancelImageDownload()
-       postImageView.cancelImageDownload()
+//       postImageView.cancelImageDownload()
 
 //       nameLabel.text = nil
 //       locationLabel.text = nil
@@ -211,6 +217,7 @@ class NormalPostCell: UICollectionViewCell {
       
       pageControl.numberOfPages = model.images.count
       pageControl.currentPage = 0
+      pageIndicatorView.set(currentIndex: 0, totalPageCount: images.count)
       
       likedByLabel.attributedText = NSMutableAttributedString()
          .normal("Liked by ", fontSize: 13)
@@ -241,6 +248,7 @@ class NormalPostCell: UICollectionViewCell {
       
       pageControl.numberOfPages = 0
       pageControl.currentPage = 0
+      pageIndicatorView.set(currentIndex: 0, totalPageCount: images.count)
       
       likedByLabel.attributedText = NSMutableAttributedString()
          .normal("Liked by ", fontSize: 13)
@@ -280,7 +288,7 @@ class NormalPostCell: UICollectionViewCell {
          .bold(name, fontSize: 13)
          .normal(description, fontSize: 13)
       
-      postImageView.downloadImage(fromURL: postImageUrl)
+//      postImageView.downloadImage(fromURL: postImageUrl)
       
       pageControl.numberOfPages = 3
       pageControl.currentPage = 0
@@ -289,7 +297,7 @@ class NormalPostCell: UICollectionViewCell {
    }
    
    private func layoutUI() {
-      contentView.addSubviews(headerView, postImageView, postImagesCollectionView, likeButton, commentButton, shareButton, pageControl, saveButton, likedByLabel, descriptionLabel, postDateLabel)
+      contentView.addSubviews(headerView, postImagesCollectionView, pageIndicatorView, likeButton, commentButton, shareButton, pageControl, saveButton, likedByLabel, descriptionLabel, postDateLabel)
       
       if let layout = postImagesCollectionView.collectionViewLayout as? UICollectionViewFlowLayout {
           layout.itemSize = CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.width)
@@ -308,11 +316,16 @@ class NormalPostCell: UICollectionViewCell {
          
          postImagesCollectionView/*postImageView*/.topAnchor.constraint(equalTo: headerView.bottomAnchor, constant: 10),
          postImagesCollectionView/*postImageView*/.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-         postImagesCollectionView/*postImageView*/.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+         postImagesCollectionView/*posstImageView*/.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
 //         postImagesCollectionView.heightAnchor.constraint(equalToConstant: 375),
          
          
 //         postImageView.heightAnchor.constraint(equalTo: widthAnchor, multiplier: 0.85),
+         
+         pageIndicatorView.topAnchor.constraint(equalTo: postImagesCollectionView.topAnchor, constant: 16),
+         pageIndicatorView.trailingAnchor.constraint(equalTo: postImagesCollectionView.trailingAnchor, constant: -16),
+         pageIndicatorView.heightAnchor.constraint(equalToConstant: 26),
+         pageIndicatorView.widthAnchor.constraint(equalToConstant: 34),
          
          likeButton.topAnchor.constraint(equalTo: postImagesCollectionView.bottomAnchor, constant: 13),
          likeButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: leadingPadding),
@@ -392,6 +405,7 @@ extension NormalPostCell: UICollectionViewDelegate {
    func scrollViewDidScroll(_ scrollView: UIScrollView) {
        let page = Int(round(scrollView.contentOffset.x / scrollView.bounds.width))
        pageControl.currentPage = page
+      pageIndicatorView.set(currentIndex: page, totalPageCount: images.count)
    }
 
 }
