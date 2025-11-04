@@ -51,11 +51,18 @@ class FeedViewModel {
       
 //      isLoadingCharacters = true
       do {
-         let response = try await networkManager.fetch(PostResponse.self, url: urlRequest)
+         let response = try await networkManager.fetch(StoryResponse.self, url: urlRequest)
          let result = response.data
          print("response.data.count", response.data.count)
-         allPosts = result
+         allStories = result
          output?.updateView(with: allPosts)
+         
+         allStories.insert(.init(
+            username: .init(localized: "Your Story"),
+            userPhoto: nil,
+            storyUrl: nil,
+            isLive: false
+         ), at: 0)
 //         isLoadingCharacters = false
       } catch {
          print("Error with network request", error.localizedDescription)

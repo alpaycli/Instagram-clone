@@ -7,11 +7,11 @@
 
 import UIKit
 
-struct StoryResponse {
+struct StoryResponse: Codable {
    let data: [StoryModel]
 }
 
-struct StoryModel {
+struct StoryModel: Codable {
    let username, userPhoto, storyUrl: String?
    let isLive: Bool
    
@@ -29,9 +29,11 @@ struct StoryModel {
    
    static let sampleData: Self = .init()
    static let mockData: [Self] = [
+      .init(username: "Your Story", storyUrl: "https://picsum.photos/seed/baku1/720/1280"),
+      .init(username: "cristiano", storyUrl: "https://picsum.photos/seed/baku1/720/1280"),
+      .init(username: "messi"),
       .init(),
-      .init(),
-      .init(),
+      .init(username: "cristiano", storyUrl: "https://picsum.photos/seed/baku1/720/1280"),
       .init(),
       .init(),
       .init(),
@@ -128,6 +130,7 @@ class FeedVC: UIViewController {
       viewModel.output = self
 //      Task {
 //         await viewModel.fetchAllPosts()
+//         await viewModel.fetchAllStories()
 //      }
       
       configureCollectionView()
@@ -180,6 +183,11 @@ extension FeedVC: UICollectionViewDataSource {
          case 0:
             let c = collectionView.dequeueReusableCell(withReuseIdentifier: StoryItemCell.reuseId, for: indexPath) as! StoryItemCell
             c.set(viewModel.allStories[indexPath.item])
+            c.onNavigation = {
+               let vc = StoriesPreviewVC(stories: self.viewModel.allStories.map { StoryClassModel(storyModel: $0) }, index: indexPath.row)
+               self.navigationController?.pushViewController(vc, animated: true)
+
+            }
             cell = c
          default:
             switch viewModel.allPosts[indexPath.item].type {
@@ -196,7 +204,6 @@ extension FeedVC: UICollectionViewDataSource {
                   c.set(data)
                   cell = c
                case .peopleSuggestion(let data):
-                  print("people suggestion cell should appear")
                   let c = collectionView.dequeueReusableCell(withReuseIdentifier: PeopleSuggestionCell.reuseId, for: indexPath) as! PeopleSuggestionCell
                   c.set(data.suggestions)
                   cell = c
@@ -210,11 +217,18 @@ extension FeedVC: UICollectionViewDataSource {
 
 extension FeedVC: UICollectionViewDelegate {
    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-      print("viewModel.allPosts[indexPath.item]", viewModel.allPosts[indexPath.item].postType)
       return .zero
    }
    
    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+      guard indexPath.section == 0 else { return }
+      
+//      if indexPath.row == 0 {
+//         
+//      } else {
+         let vc = StoriesPreviewVC(stories: viewModel.allStories.map { StoryClassModel(storyModel: $0) }, index: indexPath.row)
+         self.navigationController?.pushViewController(vc, animated: true)
+//      }
    }
 }
 
@@ -305,4 +319,13 @@ struct FeedView: UIViewControllerRepresentable{
 
 #Preview {
    FeedVC()
+}
+
+class StoryClassModel {
+   var storyModel: StoryModel
+   var isSeen = false
+   
+   init(storyModel: StoryModel) {
+      self.storyModel = storyModel
+   }
 }

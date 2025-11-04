@@ -18,6 +18,7 @@ import UIKit
 // TODO: Configure -> layoutUI
 // TODO: Accessibility - dynamic type
 // TODO: ThreadSeeMoreCell eslinde problemlidi layout setupdi
+// TODO: Hide page indictors on ad post
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -26,12 +27,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
    func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
       guard let windowScene = (scene as? UIWindowScene) else { return }
-      
-      window                      = UIWindow(frame: windowScene.coordinateSpace.bounds)
-      window?.windowScene         = windowScene
-      window?.rootViewController  = FeedVC()
-      window?.makeKeyAndVisible()
 
+      let myViewController = FeedVC()
+      let navigationController = UINavigationController(rootViewController: myViewController)
+
+      let window = UIWindow(windowScene: windowScene)
+      window.rootViewController = navigationController
+      self.window = window
+      window.makeKeyAndVisible()
    }
 
    func sceneDidDisconnect(_ scene: UIScene) {

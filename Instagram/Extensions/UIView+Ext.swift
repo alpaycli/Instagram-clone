@@ -13,6 +13,12 @@ extension UIView {
          addSubview(view)
       }
    }
+
+   func bringSubviewsToFront(_ views: UIView...) {
+      for view in views {
+         bringSubviewToFront(view)
+      }
+   }
 }
 
 extension UIImageView {
