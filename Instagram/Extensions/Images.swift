@@ -15,3 +15,8 @@ enum PostActionIcon {
    static let more = UIImage(systemName: "ellipsis")
    static let save = UIImage(resource: .save)
 }
+
+enum NavBarIcon {
+   static let instaLogo = UIImage(resource: .instagramLogo)
+   static let igTv = UIImage(resource: .IGTV)
+}

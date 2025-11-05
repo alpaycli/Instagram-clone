@@ -127,19 +127,40 @@ class FeedVC: UIViewController {
    
    override func viewDidLoad() {
       super.viewDidLoad()
+      setupViewModel()
+      configureNavigationBar()
+      configureCollectionView()
+   }
+   
+   private func configureNavigationBar() {
+      let logoImageView = UIImageView(image: NavBarIcon.instaLogo)
+      logoImageView.frame = CGRect(x: 0, y: 0, width: 100, height: 26)
+      
+      let dmNavButton = UIBarButtonItem(image: PostActionIcon.share, style: .plain, target: self, action: #selector(navBarDmButtonTapped))
+      let igTvButton = UIBarButtonItem(image: NavBarIcon.igTv, style: .plain, target: self, action: #selector(navBarIgTvButtonTapped))
+      
+      let cameraButton = UIBarButtonItem(image: .init(systemName: "camera"), style: .plain, target: self, action: #selector(navBarCameraButtonTapped))
+      
+      dmNavButton.tintColor = .label
+      igTvButton.tintColor = .label
+      cameraButton.tintColor = .label
+
+      navigationItem.titleView = logoImageView
+      navigationItem.rightBarButtonItems = [igTvButton, dmNavButton]
+      navigationItem.leftBarButtonItem = cameraButton
+   }
+   
+   private func setupViewModel() {
       viewModel.output = self
       Task {
          await viewModel.fetchAllPosts()
          await viewModel.fetchAllStories()
       }
-      
-      configureCollectionView()
    }
    
    private func configureCollectionView() {
       collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createCompositionalLayout())
       view.addSubview(collectionView)
-      
       
       collectionView.delegate = self
       collectionView.dataSource = self
@@ -253,7 +274,7 @@ extension FeedVC {
       
       let section = NSCollectionLayoutSection(group: group)
       section.orthogonalScrollingBehavior = .continuous
-      section.contentInsets = .init(top: 0, leading: 15, bottom: 0, trailing: 0)
+      section.contentInsets = .init(top: 10, leading: 15, bottom: 0, trailing: 0)
       
       return section
    }
@@ -306,16 +327,12 @@ extension FeedVC: FeedViewModelOutput {
    }
 }
 
-import SwiftUI
+// MARK: Button Actions
 
-struct FeedView: UIViewControllerRepresentable{
-   func makeUIViewController(context: Context) -> FeedVC {
-      FeedVC()
-   }
-   
-   func updateUIViewController(_ uiViewController: FeedVC, context: Context) {
-      
-   }
+extension FeedVC {
+   @objc private func navBarDmButtonTapped() {}
+   @objc private func navBarIgTvButtonTapped() {}
+   @objc private func navBarCameraButtonTapped() {}
 }
 
 #Preview {
