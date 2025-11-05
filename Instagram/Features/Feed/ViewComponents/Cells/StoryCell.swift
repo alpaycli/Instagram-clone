@@ -285,10 +285,10 @@ class StoriesPreviewVC: UIViewController {
    }
    
    private func layoutUI() {
-      view.addSubviews(progressBarView, userInfoStackView, closeButton, imageView, leftHalfOfScreen, rightHalfOfScreen)
+      view.addSubviews(progressBarView, userInfoStackView, closeButton, imageView, leftHalfOfScreen, rightHalfOfScreen, bottomBarView)
       
       NSLayoutConstraint.activate([
-         progressBarView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 4),
+         progressBarView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 8),
          progressBarView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 14),
          progressBarView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -14),
          progressBarView.heightAnchor.constraint(equalToConstant: 3),
@@ -303,6 +303,15 @@ class StoriesPreviewVC: UIViewController {
          closeButton.heightAnchor.constraint(equalToConstant: 32),
          closeButton.widthAnchor.constraint(equalToConstant: 32),
          
+         bottomBarView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -8),
+         bottomBarView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+         bottomBarView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+         bottomBarView.heightAnchor.constraint(equalToConstant: 50),
+         
+         imageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+         imageView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+         imageView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+         imageView.bottomAnchor.constraint(equalTo: bottomBarView.topAnchor, constant: -8),
       ])
       view.bringSubviewsToFront(progressBarView, userInfoStackView, closeButton)
    }
