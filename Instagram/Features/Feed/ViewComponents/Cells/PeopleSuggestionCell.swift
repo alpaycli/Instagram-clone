@@ -82,8 +82,8 @@ class PeopleSuggestionCell: UICollectionViewCell {
          collectionView.topAnchor.constraint(equalTo: headerView.bottomAnchor, constant: 10),
          collectionView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: horizontalPadding),
          collectionView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+//         collectionView.heightAnchor.constraint(equalToConstant: 200),
          collectionView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
-         collectionView.heightAnchor.constraint(equalToConstant: 200),
       ])
    }
 }
@@ -105,7 +105,8 @@ extension PeopleSuggestionCell: UICollectionViewDataSource {
 extension PeopleSuggestionCell: UICollectionViewDelegateFlowLayout {
    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
       let width = collectionView.bounds.width / 2.5
-      let height = collectionView.bounds.height
+//      let height = collectionView.bounds.height
+      let height: CGFloat = 190
       return CGSize(width: width, height: height)
    }
 }
@@ -174,7 +175,7 @@ class PeopleSuggestionItemCell: UICollectionViewCell {
    private lazy var profileImageView: GFAvatarImageView = {
       let imageView = GFAvatarImageView(frame: .zero)
       imageView.clipsToBounds = true
-            imageView.layer.cornerRadius = 43
+      imageView.layer.cornerRadius = 43
       imageView.layer.borderWidth = 0.1
       imageView.layer.borderColor = UIColor(hexString: "E5C7B0").cgColor
       
@@ -195,7 +196,7 @@ class PeopleSuggestionItemCell: UICollectionViewCell {
    
    private lazy var actionButton: UIButton = {
       let btn = UIButton(type: .custom)
-      btn.setTitle("Follow", for: .normal)
+      btn.setTitle(.init(localized:"Follow"), for: .normal)
       btn.setTitleColor(.white, for: .normal)
       btn.backgroundColor = .init(hexString: "495DF9")
       btn.titleLabel?.font = UIFont.systemFont(ofSize: 14, weight: .bold)
@@ -207,24 +208,10 @@ class PeopleSuggestionItemCell: UICollectionViewCell {
    
    override init(frame: CGRect) {
       super.init(frame: frame)
-      backgroundColor = .white
-      layer.cornerRadius = 10
-      layer.borderWidth = 1
-      layer.borderColor = UIColor(hexString: "#ECF0F3").cgColor
+      setupUI()
       layoutUI()
    }
-   
-// 
-//   override func layoutSubviews() {
-//      super.layoutSubviews()
-//      //      layoutIfNeeded()
-//      print("Salam Salam Salam")
-//      // CRITICAL: Use DispatchQueue to ensure layout is complete
-//      DispatchQueue.main.async { [weak self] in
-//         guard let self = self else { return }
-//         self.profileImageView.layer.cornerRadius = self.profileImageView.bounds.width / 2   }
-//   }
-   
+      
    // CRITICAL: Reset cell state when reused
    override func prepareForReuse() {
        super.prepareForReuse()
@@ -252,6 +239,13 @@ class PeopleSuggestionItemCell: UICollectionViewCell {
       subtitleLabel.text = item.fullName
    }
    
+   private func setupUI() {
+      backgroundColor = .white
+      layer.cornerRadius = 10
+      layer.borderWidth = 1
+      layer.borderColor = UIColor(hexString: "#ECF0F3").cgColor
+   }
+   
    private func layoutUI() {
       contentView.addSubviews(dismissButton, profileImageView, titleLabel, subtitleLabel, actionButton)
       
@@ -266,9 +260,9 @@ class PeopleSuggestionItemCell: UICollectionViewCell {
 //         profileImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -28),
 //         profileImageView.heightAnchor.constraint(equalTo: profileImageView.widthAnchor),
          
-         profileImageView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
          profileImageView.heightAnchor.constraint(equalToConstant: 86),
          profileImageView.widthAnchor.constraint(equalToConstant: 86),
+         profileImageView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
          
          titleLabel.topAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: 8),
          titleLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),

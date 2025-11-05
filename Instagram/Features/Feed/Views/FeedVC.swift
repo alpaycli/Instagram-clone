@@ -275,13 +275,13 @@ extension FeedVC {
    func createPostsSection() -> NSCollectionLayoutSection {
        let itemSize = NSCollectionLayoutSize(
            widthDimension: .fractionalWidth(1.0),
-           heightDimension: .estimated(400)
+           heightDimension: .estimated(260)
        )
        let item = NSCollectionLayoutItem(layoutSize: itemSize)
        
        let groupSize = NSCollectionLayoutSize(
            widthDimension: .fractionalWidth(1.0),
-           heightDimension: .estimated(400)
+           heightDimension: .estimated(260)
            //            heightDimension: .estimated(bunu 5 qoyanda post cell qalir normal amma o biriler pozulurb. ESLINDE mence threads container viewa fixed height versek duzele biler cox shey. Eynisi threadsin contentViewu ucun de.)
        )
        let group = NSCollectionLayoutGroup.vertical(
