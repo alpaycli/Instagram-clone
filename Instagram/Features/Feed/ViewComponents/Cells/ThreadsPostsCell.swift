@@ -167,8 +167,10 @@ final class ThreadItemView: UIView {
    
    private lazy var profileImageView: GFAvatarImageView = {
       let imageView = GFAvatarImageView(frame: .zero)
-      imageView.layer.cornerRadius = 6
+      imageView.layer.cornerRadius = 16
       imageView.clipsToBounds = true
+      imageView.layer.borderColor = UIColor(hexString: "#B6A889").cgColor
+      imageView.layer.borderWidth = 1
       imageView.translatesAutoresizingMaskIntoConstraints = false
       return imageView
    }()
@@ -206,8 +208,11 @@ final class ThreadItemView: UIView {
    
    private lazy var postImageView: GFAvatarImageView = {
       let imageView = GFAvatarImageView(frame: .zero)
-      imageView.contentMode = .scaleAspectFit
-      imageView.backgroundColor = .clear
+      imageView.contentMode = .scaleAspectFill
+//      imageView.backgroundColor = .clear
+      imageView.clipsToBounds = true
+      imageView.layer.cornerRadius = 10
+      
       imageView.translatesAutoresizingMaskIntoConstraints = false
       return imageView
    }()
@@ -241,7 +246,7 @@ final class ThreadItemView: UIView {
       
       generalStackView.axis = .vertical
       generalStackView.spacing = 10
-      generalStackView.alignment = .top
+      generalStackView.alignment = .leading
       generalStackView.distribution = .fill
       generalStackView.translatesAutoresizingMaskIntoConstraints = false
    }
