@@ -128,10 +128,10 @@ class FeedVC: UIViewController {
    override func viewDidLoad() {
       super.viewDidLoad()
       viewModel.output = self
-//      Task {
-//         await viewModel.fetchAllPosts()
-//         await viewModel.fetchAllStories()
-//      }
+      Task {
+         await viewModel.fetchAllPosts()
+         await viewModel.fetchAllStories()
+      }
       
       configureCollectionView()
    }
@@ -143,7 +143,6 @@ class FeedVC: UIViewController {
       
       collectionView.delegate = self
       collectionView.dataSource = self
-      collectionView.register(StoriesCell.self, forCellWithReuseIdentifier: StoriesCell.reuseId)
       collectionView.register(StoryItemCell.self, forCellWithReuseIdentifier: StoryItemCell.reuseId)
       collectionView.register(NormalPostCell.self, forCellWithReuseIdentifier: NormalPostCell.reuseId)
       collectionView.register(ThreadsPostsCell.self, forCellWithReuseIdentifier: ThreadsPostsCell.reuseID)
