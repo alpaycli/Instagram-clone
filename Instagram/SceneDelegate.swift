@@ -7,16 +7,13 @@
 
 import UIKit
 
+// TODO: PostCell - cleaning
 // TODO: Liked by userin imagei yoxdu
-// TODO: StoryCell bottom bar
-// TODO: Nav bar
-// TODO: StoryCell, imageler burda da qarishir
+// TODO: Divider between stories and posts sections
 // TODO: Story - isSeen only updates when cells reappears
 // TODO: PostDateLabel fix
 // TODO: 5h (timeLabel) in threads fix
-// TODO: ThreadsPost : image size and alignment
 // TODO: Stack viewlari lazy var-a kecirtmek belke
-// TODO: ThreadSeeMoreCell eslinde problemlidi layout setupdi
 // TODO: Stories spacing
 // TODO: Post image change from tab indicator fix
 // TODO: Accessibility - dynamic type

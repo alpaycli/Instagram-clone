@@ -1,3 +1,10 @@
+//
+//  ThreadsPostsCell.swift
+//  Instagram
+//
+//  Created by Alpay Calalli on 28.10.25.
+//
+
 import UIKit
 
 final class ThreadsPostsCell: UICollectionViewCell {
