@@ -29,9 +29,9 @@ struct StoryModel: Codable {
    
    static let sampleData: Self = .init()
    static let mockData: [Self] = [
-      .init(username: "Your Story", storyUrl: "https://picsum.photos/seed/baku1/720/1280"),
+      .init(username: "Your Story", userPhoto: "https://picsum.photos/seed/baku1/720/1280" , storyUrl: "https://picsum.photos/seed/baku1/720/1280"),
       .init(username: "cristiano", storyUrl: "https://picsum.photos/seed/baku1/720/1280"),
-      .init(username: "messi"),
+      .init(username: "messi", userPhoto: "https://picsum.photos/seed/baku1/720/1280"),
       .init(),
       .init(username: "cristiano", storyUrl: "https://picsum.photos/seed/baku1/720/1280"),
       .init(),
@@ -183,7 +183,7 @@ extension FeedVC: UICollectionViewDataSource {
             let c = collectionView.dequeueReusableCell(withReuseIdentifier: StoryItemCell.reuseId, for: indexPath) as! StoryItemCell
             c.set(viewModel.allStories[indexPath.item])
             c.onNavigation = {
-               let vc = StoriesPreviewVC(stories: self.viewModel.allStories.map { StoryClassModel(storyModel: $0) }, index: indexPath.row)
+               let vc = StoriesPreviewVC(stories: self.viewModel.allStories, index: indexPath.row)
                self.navigationController?.pushViewController(vc, animated: true)
 
             }
@@ -225,7 +225,9 @@ extension FeedVC: UICollectionViewDelegate {
 //      if indexPath.row == 0 {
 //         
 //      } else {
-         let vc = StoriesPreviewVC(stories: viewModel.allStories.map { StoryClassModel(storyModel: $0) }, index: indexPath.row)
+         let vc = StoriesPreviewVC(
+            stories: viewModel.allStories,
+            index: indexPath.row)
          self.navigationController?.pushViewController(vc, animated: true)
 //      }
    }
@@ -320,11 +322,18 @@ struct FeedView: UIViewControllerRepresentable{
    FeedVC()
 }
 
-class StoryClassModel {
+class StoryDataModel {
    var storyModel: StoryModel
    var isSeen = false
+   
+   var username: String { storyModel.username ?? "N/A" }
+   var storyUrl: String? { storyModel.storyUrl }
+   var userPhoto: String? { storyModel.userPhoto }
+   var isLive: Bool { storyModel.isLive }
    
    init(storyModel: StoryModel) {
       self.storyModel = storyModel
    }
+   
+   static let mockData: [StoryDataModel] = StoryModel.mockData.map({ StoryDataModel(storyModel: $0) })
 }

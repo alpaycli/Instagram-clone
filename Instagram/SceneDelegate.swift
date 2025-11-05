@@ -8,6 +8,10 @@
 import UIKit
 
 // TODO: Liked by userin imagei yoxdu
+// TODO: StoryCell bottom bar
+// TODO: Nav bar
+// TODO: StoryCell, imageler burda da qarishir
+// TODO: Story - isSeen only updates when cells reappears
 // TODO: PostDateLabel fix
 // TODO: 5h (timeLabel) in threads fix
 // TODO: ThreadsPost : image size and alignment

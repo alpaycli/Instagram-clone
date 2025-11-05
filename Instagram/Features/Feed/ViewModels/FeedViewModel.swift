@@ -14,7 +14,7 @@ protocol FeedViewModelOutput: AnyObject {
 class FeedViewModel {
    weak var output: FeedViewModelOutput?
    
-   private(set) var allStories: [StoryModel] = StoryModel.mockData
+   private(set) var allStories: [StoryDataModel] = StoryDataModel.mockData
    private(set) var allPosts: [PostModel] = PostModel.mockData
    
    private let networkManager = NetworkManager.shared
@@ -54,19 +54,20 @@ class FeedViewModel {
          let response = try await networkManager.fetch(StoryResponse.self, url: urlRequest)
          let result = response.data
          print("response.data.count", response.data.count)
-         allStories = result
+         allStories = result.map({ StoryDataModel(storyModel: $0) })
          output?.updateView(with: allPosts)
          
-         allStories.insert(.init(
-            username: .init(localized: "Your Story"),
-            userPhoto: nil,
-            storyUrl: nil,
-            isLive: false
-         ), at: 0)
-//         isLoadingCharacters = false
+         let yourStory = StoryDataModel(
+            storyModel: .init(
+               username: .init(localized: "Your Story"),
+               userPhoto: nil,
+               storyUrl: nil,
+               isLive: false
+            )
+         )
+         allStories.insert(yourStory, at: 0)
       } catch {
          print("Error with network request", error.localizedDescription)
-//         isLoadingCharacters = false
       }
       
       

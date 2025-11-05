@@ -5,7 +5,6 @@
 //  Created by Alpay Calalli on 28.10.25.
 //
 
-import IGStoryButtonKit
 import UIKit
 
 class StoryItemCell: UICollectionViewCell {
@@ -39,7 +38,7 @@ class StoryItemCell: UICollectionViewCell {
       return v
    }()
    
-   private lazy var username: IGTitleLabel = {
+   private lazy var usernameLabel: IGTitleLabel = {
       let l = IGTitleLabel(textAlignment: .center, fontSize: 12, weight: .regular)
       
       return l
@@ -52,13 +51,22 @@ class StoryItemCell: UICollectionViewCell {
       layoutUI()
    }
    
+   override func prepareForReuse() {
+      super.prepareForReuse()
+      button.image = nil
+      button.condition = .init(display: .none)
+      
+      usernameLabel.text = nil
+   }
+   
    required init?(coder: NSCoder) {
       fatalError("init(coder:) has not been implemented")
    }
    
-   func set(_ story: StoryModel) {
-      username.text = story.username
+   func set(_ story: StoryDataModel) {
+      usernameLabel.text = story.username
       layoutLiveIndicatorViewIfNeeded(isLive: story.isLive)
+      button.condition = .init(display: story.isSeen ? .seen : .unseen)
       
       if let imageUrl = story.userPhoto {
          loadImage(from: imageUrl) { [weak self] image in
@@ -68,16 +76,16 @@ class StoryItemCell: UICollectionViewCell {
    }
    
    private func layoutUI() {
-      addSubviews(button, username)
+      addSubviews(button, usernameLabel)
       NSLayoutConstraint.activate([
          button.topAnchor.constraint(equalTo: topAnchor),
          button.leadingAnchor.constraint(equalTo: leadingAnchor),
          button.heightAnchor.constraint(equalToConstant: 62),
          button.widthAnchor.constraint(equalToConstant: 62),
          
-         username.topAnchor.constraint(equalTo: button.bottomAnchor, constant: 5),
-         username.centerXAnchor.constraint(equalTo: button.centerXAnchor),
-         username.heightAnchor.constraint(equalToConstant: 24)
+         usernameLabel.topAnchor.constraint(equalTo: button.bottomAnchor, constant: 5),
+         usernameLabel.centerXAnchor.constraint(equalTo: button.centerXAnchor),
+         usernameLabel.heightAnchor.constraint(equalToConstant: 24)
       ])
 
    }
@@ -234,16 +242,24 @@ class StoriesPreviewVC: UIViewController {
    }()
       
    private lazy var imageView: GFAvatarImageView = {
-      let v = GFAvatarImageView(frame: view.bounds)
+      let v = GFAvatarImageView(frame: .zero)
       if let url = viewModel.currentStory?.storyUrl {
          v.downloadImage(fromURL: url)
       }
-
+      v.contentMode = .scaleAspectFill
       
+      v.translatesAutoresizingMaskIntoConstraints = false
       return v
    }()
    
-   init(stories: [StoryClassModel], index: Int) {
+   private lazy var bottomBarView: StoryBottomBarView = {
+      let v = StoryBottomBarView()
+      
+      v.translatesAutoresizingMaskIntoConstraints = false
+      return v
+   }()
+   
+   init(stories: [StoryDataModel], index: Int) {
       self.viewModel = .init(stories: stories, currentStoryIndex: index)
       super.init(nibName: nil, bundle: nil)
    }
@@ -318,7 +334,7 @@ class StoriesPreviewVC: UIViewController {
 }
 
 extension StoriesPreviewVC: StoriesPreviewViewModelOutput {
-   func showNextStory(withIndex index: Int, stories: [StoryClassModel]) {
+   func showNextStory(withIndex index: Int, stories: [StoryDataModel]) {
       let vc = StoriesPreviewVC(stories: stories, index: index)
       
       let transition = CATransition()
@@ -331,7 +347,7 @@ extension StoriesPreviewVC: StoriesPreviewViewModelOutput {
 
    }
    
-   func showPreviousStory(withIndex index: Int, stories: [StoryClassModel]) {
+   func showPreviousStory(withIndex index: Int, stories: [StoryDataModel]) {
       let vc = StoriesPreviewVC(stories: stories, index: index)
       
       let transition = CATransition()
@@ -351,14 +367,14 @@ extension StoriesPreviewVC: StoriesPreviewViewModelOutput {
 }
 
 protocol StoriesPreviewViewModelOutput: AnyObject {
-    func showNextStory(withIndex index: Int, stories: [StoryClassModel])
-   func showPreviousStory(withIndex index: Int, stories: [StoryClassModel])
+    func showNextStory(withIndex index: Int, stories: [StoryDataModel])
+   func showPreviousStory(withIndex index: Int, stories: [StoryDataModel])
    func close()
 }
 
 class StoriesPreviewViewModel {
    private var currentStoryIndex: Int
-   private var stories: [StoryClassModel]
+   private var stories: [StoryDataModel]
    
    /// To control story duration
    var timer: Timer?
@@ -369,7 +385,7 @@ class StoriesPreviewViewModel {
    
    weak var output: StoriesPreviewViewModelOutput?
    
-   init(stories: [StoryClassModel], currentStoryIndex: Int) {
+   init(stories: [StoryDataModel], currentStoryIndex: Int) {
       self.stories = stories
       self.currentStoryIndex = currentStoryIndex
    }
@@ -403,10 +419,7 @@ class StoriesPreviewViewModel {
 }
 
 #Preview {
-   let vc = StoriesPreviewVC(
-      stories: StoryModel.mockData.map({StoryClassModel(storyModel: $0) }),
-      index: 0
-   )
+   let vc = StoriesPreviewVC(stories: StoryDataModel.mockData, index: 0)
    let navcontroll = UINavigationController(rootViewController: vc)
    
    return navcontroll
