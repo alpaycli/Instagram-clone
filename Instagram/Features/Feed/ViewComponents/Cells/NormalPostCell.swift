@@ -202,6 +202,8 @@ class NormalPostCell: UICollectionViewCell {
        descriptionLabel.text = nil
        postDateLabel.text = nil
       images = []
+      
+      shopNowBannerView.removeFromSuperview()
    }
 
 
