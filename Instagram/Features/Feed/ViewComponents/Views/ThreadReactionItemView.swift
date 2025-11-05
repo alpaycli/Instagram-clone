@@ -35,20 +35,7 @@ class ThreadReactionItemView: UIView {
    
    override init(frame: CGRect) {
        super.init(frame: frame)
-      stackView.axis = .horizontal
-      stackView.spacing = 8
-      addSubview(stackView)
-      stackView.addArrangedSubview(actionButton)
-      stackView.addArrangedSubview(label)
-      
-      stackView.translatesAutoresizingMaskIntoConstraints = false
-      NSLayoutConstraint.activate([
-         stackView.leadingAnchor.constraint(equalTo: leadingAnchor),
-         stackView.topAnchor.constraint(equalTo: topAnchor),
-         stackView.trailingAnchor.constraint(equalTo: trailingAnchor),
-         stackView.bottomAnchor.constraint(equalTo: bottomAnchor)
-      ])
-//       configure()
+       layoutUI()
    }
    
    required init?(coder: NSCoder) {
@@ -61,18 +48,19 @@ class ThreadReactionItemView: UIView {
       self.buttonAction = buttonAction
    }
    
-   private func configure() {
-      addSubviews(actionButton, label)
+   private func layoutUI() {
+      stackView.axis = .horizontal
+      stackView.spacing = 8
+      addSubview(stackView)
+      stackView.addArrangedSubview(actionButton)
+      stackView.addArrangedSubview(label)
       
+      stackView.translatesAutoresizingMaskIntoConstraints = false
       NSLayoutConstraint.activate([
-         actionButton.topAnchor.constraint(equalTo: topAnchor),
-         actionButton.leadingAnchor.constraint(equalTo: leadingAnchor),
-         actionButton.bottomAnchor.constraint(equalTo: bottomAnchor),
-         
-         label.topAnchor.constraint(equalTo: topAnchor),
-         label.leadingAnchor.constraint(equalTo: actionButton.trailingAnchor, constant: 8),
-         label.bottomAnchor.constraint(equalTo: bottomAnchor),
-         label.trailingAnchor.constraint(equalTo: trailingAnchor)
+         stackView.leadingAnchor.constraint(equalTo: leadingAnchor),
+         stackView.topAnchor.constraint(equalTo: topAnchor),
+         stackView.trailingAnchor.constraint(equalTo: trailingAnchor),
+         stackView.bottomAnchor.constraint(equalTo: bottomAnchor)
       ])
    }
    

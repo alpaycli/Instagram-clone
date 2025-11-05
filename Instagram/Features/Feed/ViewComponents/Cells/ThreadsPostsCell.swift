@@ -235,7 +235,7 @@ final class ThreadItemCell: UICollectionViewCell {
       super.init(frame: frame)
       configureUserInfoStackView()
       configureGeneralStackView()
-      configure()
+      layoutUI()
    }
    
    required init?(coder: NSCoder) {
@@ -307,7 +307,7 @@ final class ThreadItemCell: UICollectionViewCell {
       userInfoStackView.translatesAutoresizingMaskIntoConstraints = false
    }
    
-   private func configure() {
+   private func layoutUI() {
        contentView.layer.cornerRadius = 16
        contentView.backgroundColor = .white
        contentView.layer.borderWidth = 1

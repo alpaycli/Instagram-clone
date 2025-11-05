@@ -17,7 +17,7 @@ class ThreadReactionsView: UIView {
 
    override init(frame: CGRect) {
        super.init(frame: frame)
-       configure()
+       layoutUI()
    }
    
    required init?(coder: NSCoder) {
@@ -31,7 +31,7 @@ class ThreadReactionsView: UIView {
       shareItemView.set(image: PostActionIcon.share, label: "\(postData.sharedCount)", buttonAction: {print("share tapped")})
    }
    
-   private func configure() {
+   private func layoutUI() {
       stackView.axis = .horizontal
       stackView.spacing = 15
       stackView.alignment = .leading
