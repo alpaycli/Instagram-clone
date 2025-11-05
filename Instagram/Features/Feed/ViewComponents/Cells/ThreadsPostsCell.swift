@@ -5,18 +5,18 @@ final class ThreadsPostsCell: UICollectionViewCell {
    static let reuseID = "ThreadsPostsCell"
    
    private var model: ThreadsModel = .init(post: PostModel.mockData[1].data)
+   private var threadItemViews: [ThreadItemView] = []
      
    private lazy var headerView: PostHeaderView = {
       let v = PostHeaderView()
-      
       v.translatesAutoresizingMaskIntoConstraints = false
       return v
    }()
+   
    private lazy var containerView: UIView = {
       let v = UIView()
       v.layer.cornerRadius = 16
       v.layer.masksToBounds = true
-      
       v.translatesAutoresizingMaskIntoConstraints = false
       return v
    }()
@@ -25,31 +25,30 @@ final class ThreadsPostsCell: UICollectionViewCell {
       let control = UIPageControl()
       control.currentPageIndicatorTintColor = .label
       control.pageIndicatorTintColor = .systemGray3
-      
       control.translatesAutoresizingMaskIntoConstraints = false
       return control
    }()
    
-   private lazy var collectionView: UICollectionView = {
-       let layout = UICollectionViewFlowLayout()
-       layout.scrollDirection = .horizontal
-       layout.minimumLineSpacing = 16 // Space between cells
-      let width = UIScreen.main.bounds.size.width - 32
-      layout.estimatedItemSize = CGSize(width: width, height: 10)
-       
-       let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-       collectionView.isPagingEnabled = false // We'll handle paging manually
-       collectionView.backgroundColor = .clear
-       collectionView.showsHorizontalScrollIndicator = false
-       collectionView.dataSource = self
-       collectionView.delegate = self
-       collectionView.decelerationRate = .fast
-       collectionView.contentInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
-       collectionView.register(ThreadItemCell.self, forCellWithReuseIdentifier: ThreadItemCell.reuseID)
-       collectionView.register(ThreadSeeMoreCell.self, forCellWithReuseIdentifier: ThreadSeeMoreCell.reuseID)
-      
-      collectionView.translatesAutoresizingMaskIntoConstraints = false
-       return collectionView
+   private lazy var scrollView: UIScrollView = {
+       let sv = UIScrollView()
+       sv.isPagingEnabled = false
+       sv.backgroundColor = .clear
+       sv.showsHorizontalScrollIndicator = false
+       sv.delegate = self
+       sv.decelerationRate = .fast
+       sv.contentInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+       sv.translatesAutoresizingMaskIntoConstraints = false
+       return sv
+   }()
+   
+   private lazy var contentStackView: UIStackView = {
+       let sv = UIStackView()
+       sv.axis = .horizontal
+       sv.spacing = 16
+      sv.alignment = .center
+       sv.distribution = .fill
+       sv.translatesAutoresizingMaskIntoConstraints = false
+       return sv
    }()
    
    override init(frame: CGRect) {
@@ -62,35 +61,37 @@ final class ThreadsPostsCell: UICollectionViewCell {
    }
    
    private func layoutUI() {
-      backgroundColor = .clear // so outer feed gray shows
-      collectionView.backgroundColor = .systemGray5// Gray background
+      backgroundColor = .clear
+      scrollView.backgroundColor = .systemGray5
       containerView.backgroundColor = .white
       
+      scrollView.addSubview(contentStackView)
       contentView.addSubview(containerView)
-      containerView.addSubviews(headerView, collectionView, pageControl)
+      containerView.addSubviews(headerView, scrollView, pageControl)
       
       NSLayoutConstraint.activate([
-         containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 0),
-         containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: 0),
+         containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+         containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
          containerView.topAnchor.constraint(equalTo: contentView.topAnchor),
-         containerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: /*-8*/ 0),
+         containerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
          
          headerView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 12),
          headerView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
          headerView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
          headerView.heightAnchor.constraint(equalToConstant: 44),
          
-         collectionView.topAnchor.constraint(equalTo: headerView.bottomAnchor, constant: 8),
-         collectionView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
-         collectionView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-//         collectionView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -12),
-         collectionView.heightAnchor.constraint(equalToConstant: 360),
-
+         scrollView.topAnchor.constraint(equalTo: headerView.bottomAnchor, constant: 8),
+         scrollView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+         scrollView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+         scrollView.heightAnchor.constraint(equalToConstant: 360),
          
-         pageControl.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: 18),
+         contentStackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+         contentStackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+         contentStackView.centerYAnchor.constraint(equalTo: scrollView.centerYAnchor),
+         
+         pageControl.topAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: 18),
          pageControl.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
          pageControl.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -4)
-
       ])
    }
    
@@ -100,81 +101,70 @@ final class ThreadsPostsCell: UICollectionViewCell {
       headerView.set(title: "Threads", subtitle: subtitle, avatar: nil)
       pageControl.numberOfPages = model.posts.count + 1
       pageControl.currentPage = 0
-      collectionView.reloadData()
-   }
-}
-
-// MARK: - UICollectionViewDataSource
-extension ThreadsPostsCell: UICollectionViewDataSource {
-   func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-      model.posts.count + 1
-   }
-   
-   func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-      if indexPath.item == model.posts.count {
-         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ThreadSeeMoreCell.reuseID, for: indexPath) as! ThreadSeeMoreCell
-         // Mock data
-         cell.set(profileImages: [
-            "https://t4.ftcdn.net/jpg/04/57/50/41/360_F_457504159_nEcxnfFqE9O1jaogLTh4bviUPPQ7xncW.jpg",
-            "https://t4.ftcdn.net/jpg/04/57/50/41/360_F_457504159_nEcxnfFqE9O1jaogLTh4bviUPPQ7xncW.jpg",
-            "https://t4.ftcdn.net/jpg/04/57/50/41/360_F_457504159_nEcxnfFqE9O1jaogLTh4bviUPPQ7xncW.jpg"
-         ])
-         return cell
+      
+      // Clear existing views
+      contentStackView.arrangedSubviews.forEach {
+         contentStackView.removeArrangedSubview($0)
+         $0.removeFromSuperview()
+      }
+      threadItemViews.removeAll()
+      
+      // Add thread item views
+      let width = UIScreen.main.bounds.size.width - 32
+      
+      for post in model.posts {
+         let itemView = ThreadItemView()
+         itemView.set(post)
+         itemView.translatesAutoresizingMaskIntoConstraints = false
+         itemView.widthAnchor.constraint(equalToConstant: width).isActive = true
+         contentStackView.addArrangedSubview(itemView)
+         threadItemViews.append(itemView)
       }
       
-      let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ThreadItemCell.reuseID, for: indexPath) as! ThreadItemCell
-      cell.set(model.posts[indexPath.item])
-      return cell
+      // Add "See More" view
+      let seeMoreView = ThreadSeeMoreView()
+      seeMoreView.set(profileImages: [
+         "https://t4.ftcdn.net/jpg/04/57/50/41/360_F_457504159_nEcxnfFqE9O1jaogLTh4bviUPPQ7xncW.jpg",
+         "https://t4.ftcdn.net/jpg/04/57/50/41/360_F_457504159_nEcxnfFqE9O1jaogLTh4bviUPPQ7xncW.jpg",
+         "https://t4.ftcdn.net/jpg/04/57/50/41/360_F_457504159_nEcxnfFqE9O1jaogLTh4bviUPPQ7xncW.jpg"
+      ])
+      seeMoreView.translatesAutoresizingMaskIntoConstraints = false
+      seeMoreView.widthAnchor.constraint(equalToConstant: width).isActive = true
+      seeMoreView.heightAnchor.constraint(equalToConstant: 164).isActive = true
+      contentStackView.addArrangedSubview(seeMoreView)
    }
 }
 
-// MARK: - UICollectionViewDelegateFlowLayout
-extension ThreadsPostsCell: UICollectionViewDelegateFlowLayout {
-//   func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-//      let width = collectionView.bounds.width - 32 // Subtract left + right padding
-//      let height = collectionView.bounds.height
-//      return CGSize(width: width, height: height)
-//   }
-   
-   func scrollViewDidScroll(_ scrollView: UIScrollView) {
-       let page = Int(round(scrollView.contentOffset.x / scrollView.bounds.width))
-       pageControl.currentPage = page
-   }
-}
-
-// MARK: - UIScrollViewDelegate (Paging behavior)
-
+// MARK: - UIScrollViewDelegate
 extension ThreadsPostsCell: UIScrollViewDelegate {
-   func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-      let cellWidth = scrollView.bounds.width - 32
+   func scrollViewDidScroll(_ scrollView: UIScrollView) {
+      let cellWidth = UIScreen.main.bounds.size.width - 32
       let spacing: CGFloat = 16
-      let totalCellWidth = cellWidth + spacing
+      let totalWidth = cellWidth + spacing
+      let offsetX = scrollView.contentOffset.x + 16
+      let page = Int(round(offsetX / totalWidth))
+      pageControl.currentPage = page
+   }
+   
+   func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+      let cellWidth = UIScreen.main.bounds.size.width - 32
+      let spacing: CGFloat = 16
+      let totalWidth = cellWidth + spacing
       
       let targetX = targetContentOffset.pointee.x + 16
-      let index = round(targetX / totalCellWidth)
-      let newOffset = index * totalCellWidth - 16
+      let index = round(targetX / totalWidth)
+      let newOffset = index * totalWidth - 16
       
       targetContentOffset.pointee.x = max(newOffset, -16)
    }
 }
 
-// MARK: - ThreadItemCell
-final class ThreadItemCell: UICollectionViewCell {
-   static let reuseID = "ThreadItemCell"
-   
-   lazy var width: NSLayoutConstraint = {
-       let width = contentView.widthAnchor.constraint(equalToConstant: bounds.size.width)
-       width.isActive = true
-       return width
-   }()
-
-   override func systemLayoutSizeFitting(_ targetSize: CGSize, withHorizontalFittingPriority horizontalFittingPriority: UILayoutPriority, verticalFittingPriority: UILayoutPriority) -> CGSize {
-       width.constant = bounds.size.width
-       return contentView.systemLayoutSizeFitting(CGSize(width: targetSize.width, height: 1))
-   }
+// MARK: - ThreadItemView (converted from ThreadItemCell)
+final class ThreadItemView: UIView {
    
    private let generalStackView = UIStackView()
    private let userInfoStackView = UIStackView()
+   
    private lazy var profileImageView: GFAvatarImageView = {
       let imageView = GFAvatarImageView(frame: .zero)
       imageView.layer.cornerRadius = 6
@@ -228,7 +218,6 @@ final class ThreadItemCell: UICollectionViewCell {
       return v
    }()
    
-   // Store the height constraint so we can manage it
    private var postImageHeightConstraint: NSLayoutConstraint?
    
    override init(frame: CGRect) {
@@ -242,34 +231,6 @@ final class ThreadItemCell: UICollectionViewCell {
       fatalError("init(coder:) has not been implemented")
    }
    
-   // CRITICAL: Reset cell state when reused
-   override func prepareForReuse() {
-       super.prepareForReuse()
-       
-       // Reset images to prevent wrong images appearing
-       profileImageView.image = nil
-       postImageView.image = nil
-       
-       // Cancel any ongoing image downloads
-       profileImageView.cancelImageDownload() // Implement this in GFAvatarImageView
-       postImageView.cancelImageDownload()
-       
-       // Remove postImageView from stack if it's there
-       if postImageView.superview != nil {
-           generalStackView.removeArrangedSubview(postImageView)
-           postImageView.removeFromSuperview()
-       }
-       
-       // Deactivate the height constraint
-       postImageHeightConstraint?.isActive = false
-       postImageHeightConstraint = nil
-       
-       // Reset labels
-       nameLabel.text = nil
-       timeLabel.text = nil
-       descriptionLabel.text = nil
-   }
-   
    private func configureGeneralStackView() {
       userInfoStackView.heightAnchor.constraint(equalToConstant: 34).isActive = true
       userInfoStackView.alignment = .center
@@ -277,12 +238,6 @@ final class ThreadItemCell: UICollectionViewCell {
       generalStackView.addArrangedSubview(userInfoStackView)
       generalStackView.addArrangedSubview(descriptionLabel)
       generalStackView.addArrangedSubview(reactionsView)
-      
-//      [userInfoStackView, descriptionLabel, postImageView, reactionsView].forEach({ $0.backgroundColor = [UIColor.lightGray, .darkGray, .cyan, .green, .magenta].randomElement() })
-            
-      NSLayoutConstraint.activate([
-         reactionsView.widthAnchor.constraint(equalToConstant: contentView.frame.width)
-      ])
       
       generalStackView.axis = .vertical
       generalStackView.spacing = 10
@@ -308,24 +263,24 @@ final class ThreadItemCell: UICollectionViewCell {
    }
    
    private func layoutUI() {
-       contentView.layer.cornerRadius = 16
-       contentView.backgroundColor = .white
-       contentView.layer.borderWidth = 1
-       contentView.layer.borderColor = UIColor.systemGray6.cgColor
+       layer.cornerRadius = 16
+       backgroundColor = .white
+       layer.borderWidth = 1
+       layer.borderColor = UIColor.systemGray6.cgColor
        
-       contentView.addSubview(generalStackView)
-       contentView.addSubview(moreButton)
+       addSubview(generalStackView)
+       addSubview(moreButton)
        
        let padding: CGFloat = 16
        
        NSLayoutConstraint.activate([
            moreButton.topAnchor.constraint(equalTo: userInfoStackView.topAnchor),
-           moreButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -padding),
+           moreButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -padding),
            
-           generalStackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 21),
-           generalStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: padding),
-           generalStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -padding),
-           generalStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -padding)
+           generalStackView.topAnchor.constraint(equalTo: topAnchor, constant: 21),
+           generalStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: padding),
+           generalStackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -padding),
+           generalStackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -padding)
        ])
    }
    
@@ -339,16 +294,12 @@ final class ThreadItemCell: UICollectionViewCell {
       if let imageUrl = post.image {
          postImageView.downloadImage(fromURL: imageUrl)
          
-         // Only add if not already in the stack view
          if postImageView.superview == nil {
             generalStackView.insertArrangedSubview(postImageView, at: 2)
-            
-            // Create and store the constraint
             postImageHeightConstraint = postImageView.heightAnchor.constraint(equalToConstant: 150)
             postImageHeightConstraint?.isActive = true
          }
       } else {
-         // Remove image view if there's no image
          if postImageView.superview != nil {
             generalStackView.removeArrangedSubview(postImageView)
             postImageView.removeFromSuperview()
@@ -361,34 +312,7 @@ final class ThreadItemCell: UICollectionViewCell {
    }
 }
 
-import SwiftUI
-
-struct ThreadItemCellView: UIViewRepresentable {
-   func makeUIView(context: Context) -> ThreadItemCell {
-      ThreadItemCell()
-   }
-   
-   func updateUIView(_ uiView: ThreadItemCell, context: Context) {
-      
-   }
-}
-
-class ThreadSeeMoreCell: UICollectionViewCell {
-   static let reuseID = "ThreadSeeMoreCell"
-   
-//   lazy var width: NSLayoutConstraint = {
-//       let width = contentView.widthAnchor.constraint(equalToConstant: bounds.size.width)
-//       width.isActive = true
-//       return width
-//   }()
-//
-//   override func systemLayoutSizeFitting(_ targetSize: CGSize, withHorizontalFittingPriority horizontalFittingPriority: UILayoutPriority, verticalFittingPriority: UILayoutPriority) -> CGSize {
-//       width.constant = bounds.size.width
-//       return contentView.systemLayoutSizeFitting(CGSize(width: targetSize.width, height: 1))
-//   }
-   
-   // Store the height constraint so we can manage it
-//   private var postImageHeightConstraint: NSLayoutConstraint?
+final class ThreadSeeMoreView: UIView {
    
    private lazy var generalStackView: UIStackView = {
       let sv = UIStackView()
@@ -452,34 +376,6 @@ class ThreadSeeMoreCell: UICollectionViewCell {
       fatalError("init(coder:) has not been implemented")
    }
    
-   // CRITICAL: Reset cell state when reused
-//   override func prepareForReuse() {
-//       super.prepareForReuse()
-//
-//       // Reset images to prevent wrong images appearing
-//       profileImageView.image = nil
-//       postImageView.image = nil
-//
-//       // Cancel any ongoing image downloads
-//       profileImageView.cancelImageDownload() // Implement this in GFAvatarImageView
-//       postImageView.cancelImageDownload()
-//
-//       // Remove postImageView from stack if it's there
-//       if postImageView.superview != nil {
-//           generalStackView.removeArrangedSubview(postImageView)
-//           postImageView.removeFromSuperview()
-//       }
-//
-//       // Deactivate the height constraint
-//       postImageHeightConstraint?.isActive = false
-//       postImageHeightConstraint = nil
-//
-//       // Reset labels
-//       nameLabel.text = nil
-//       timeLabel.text = nil
-//       descriptionLabel.text = nil
-//   }
-   
    func set(profileImages: [String]) {
       guard profileImagesStackView.arrangedSubviews.isEmpty else { return }
       
@@ -489,32 +385,28 @@ class ThreadSeeMoreCell: UICollectionViewCell {
          imageView.downloadImage(fromURL: imageUrl)
          imageView.clipsToBounds = true
          
-         imageView.heightAnchor.constraint(equalToConstant: 32).isActive = true // 32
+         imageView.heightAnchor.constraint(equalToConstant: 32).isActive = true
          imageView.widthAnchor.constraint(equalToConstant: 32).isActive = true
          
          imageView.layer.cornerRadius = 16
          imageView.layer.borderWidth = 3
          imageView.layer.borderColor = UIColor.systemBackground.cgColor
-//         imageView.addOuterBorder(color: .green, width: 3)
          
          profileImagesStackView.addArrangedSubview(imageView)
       }
-      print("generalstackview", generalStackView.arrangedSubviews.count)
-//      print("profilesstackview", profileImagesStackView.arrangedSubviews.count)
-//      generalStackView.addArrangedSubview(profileImagesStackView)
    }
    
    private func layoutUI() {
-      contentView.layer.cornerRadius = 16
-      contentView.backgroundColor = .white
-      contentView.layer.borderWidth = 1
-      contentView.layer.borderColor = UIColor.systemGray6.cgColor
+      layer.cornerRadius = 16
+      backgroundColor = .white
+      layer.borderWidth = 1
+      layer.borderColor = UIColor.systemGray6.cgColor
       
-      contentView.addSubviews(generalStackView)
+      addSubviews(generalStackView)
       
       NSLayoutConstraint.activate([
-         generalStackView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-         generalStackView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+         generalStackView.centerXAnchor.constraint(equalTo: centerXAnchor),
+         generalStackView.centerYAnchor.constraint(equalTo: centerYAnchor),
          generalStackView.heightAnchor.constraint(equalToConstant: 140)
       ])
    }
