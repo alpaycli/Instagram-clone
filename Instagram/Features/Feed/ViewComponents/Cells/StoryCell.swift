@@ -221,7 +221,9 @@ class StoriesPreviewVC: UIViewController {
       v.backgroundColor = .clear
       
       let gesture = UITapGestureRecognizer(target: viewModel.self, action: #selector(viewModel.leftSideOfScreenTapped))
+      let longPressGesture = UILongPressGestureRecognizer(target: viewModel.self, action: #selector(viewModel.leftSideOfScreenLongPressed))
       v.addGestureRecognizer(gesture)
+      v.addGestureRecognizer(longPressGesture)
       
       v.translatesAutoresizingMaskIntoConstraints = false
       return v
@@ -254,6 +256,12 @@ class StoriesPreviewVC: UIViewController {
    
    private lazy var bottomBarView: StoryBottomBarView = {
       let v = StoryBottomBarView()
+      v.beginEditing =  {
+         self.viewModel.timer?.invalidate()
+      }
+      v.endEditing = {
+         self.viewModel.configureStoryTimer()
+      }
       
       v.translatesAutoresizingMaskIntoConstraints = false
       return v
@@ -271,21 +279,22 @@ class StoriesPreviewVC: UIViewController {
    override func viewDidLoad() {
       viewModel.output = self
       layoutUI()
-      configureStoryTimer()
+//      configureStoryTimer()
+      viewModel.configureStoryTimer()
    }
    
-   func configureStoryTimer() {
-      viewModel.timer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { timer in
-           // 5 seconds total / 0.05 interval = 100 ticks → each tick should add 1/100 = 0.01
-           if self.progressBarView.progress < 1 {
-              self.progressBarView.setProgress(self.progressBarView.progress + 0.01, animated: true)
-              
-           } else {
-               self.viewModel.handleForwardAction()
-               timer.invalidate()
-           }
-       }
-   }
+//   func configureStoryTimer() {
+//      viewModel.timer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { timer in
+//           // 5 seconds total / 0.05 interval = 100 ticks → each tick should add 1/100 = 0.01
+//           if self.progressBarView.progress < 1 {
+//              self.progressBarView.setProgress(self.progressBarView.progress + 0.01, animated: true)
+//              
+//           } else {
+//               self.viewModel.handleForwardAction()
+//               timer.invalidate()
+//           }
+//       }
+//   }
 
    override func viewWillAppear(_ animated: Bool) {
        super.viewWillAppear(animated)
@@ -334,6 +343,16 @@ class StoriesPreviewVC: UIViewController {
 }
 
 extension StoriesPreviewVC: StoriesPreviewViewModelOutput {
+   func timerUpdated() {
+      if self.progressBarView.progress < 1 {
+         self.progressBarView.setProgress(self.progressBarView.progress + 0.01, animated: true)
+         
+      } else {
+          self.viewModel.handleForwardAction()
+         viewModel.timer?.invalidate()
+      }
+   }
+   
    func showNextStory(withIndex index: Int, stories: [StoryDataModel]) {
       let vc = StoriesPreviewVC(stories: stories, index: index)
       
@@ -367,6 +386,7 @@ extension StoriesPreviewVC: StoriesPreviewViewModelOutput {
 }
 
 protocol StoriesPreviewViewModelOutput: AnyObject {
+   func timerUpdated()
     func showNextStory(withIndex index: Int, stories: [StoryDataModel])
    func showPreviousStory(withIndex index: Int, stories: [StoryDataModel])
    func close()
@@ -390,6 +410,13 @@ class StoriesPreviewViewModel {
       self.currentStoryIndex = currentStoryIndex
    }
    
+   func configureStoryTimer() {
+      timer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { timer in
+           // 5 seconds total / 0.05 interval = 100 ticks → each tick should add 1/100 = 0.01
+         self.output?.timerUpdated()
+       }
+   }
+   
    func handleForwardAction() {
       timer?.invalidate()
       guard currentStoryIndex + 1 < stories.count else {
@@ -411,6 +438,14 @@ class StoriesPreviewViewModel {
       output?.showPreviousStory(withIndex: currentStoryIndex, stories: stories)
       
       stories[currentStoryIndex].isSeen = true
+   }
+   
+   @objc func leftSideOfScreenLongPressed(_ gestureRecognizer: UILongPressGestureRecognizer) {
+      if gestureRecognizer.state == .began {
+         timer?.invalidate()
+      } else if gestureRecognizer.state == .ended {
+         configureStoryTimer()
+      }
    }
    
    @objc func rightSideOfScreenTapped() {

@@ -7,7 +7,10 @@
 
 import UIKit
 
-class StoryBottomBarView: UIView {
+class StoryBottomBarView: UIView, UISearchTextFieldDelegate {
+   
+   var beginEditing: () -> () = {}
+   var endEditing: () -> () = {}
     
     private let cameraButton: UIButton = {
         let btn = UIButton(type: .system)
@@ -42,6 +45,7 @@ class StoryBottomBarView: UIView {
             string: "Send Message",
             attributes: [.foregroundColor: UIColor.white]
         )
+        
         tf.translatesAutoresizingMaskIntoConstraints = false
         return tf
     }()
@@ -88,6 +92,7 @@ class StoryBottomBarView: UIView {
         addSubview(moreButton)
         
         containerView.addSubview(messageTextField)
+       messageTextField.delegate = self
         
         layoutUI()
     }
@@ -133,4 +138,14 @@ class StoryBottomBarView: UIView {
     @objc private func sendButtonTapped() {}
     
     @objc private func moreButtonTapped() {}
+}
+
+extension StoryBottomBarView: UITextFieldDelegate {
+   func textFieldDidBeginEditing(_ textField: UITextField) {
+      beginEditing()
+   }
+   
+   func textFieldDidEndEditing(_ textField: UITextField) {
+      endEditing()
+   }
 }
