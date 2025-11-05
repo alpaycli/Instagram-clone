@@ -18,7 +18,7 @@ import UIKit
 // TODO: Configure -> layoutUI
 // TODO: Accessibility - dynamic type
 // TODO: ThreadSeeMoreCell eslinde problemlidi layout setupdi
-// TODO: Hide page indictors on ad post
+// TODO: Stories spacing
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 

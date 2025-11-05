@@ -144,7 +144,7 @@ class FeedVC: UIViewController {
       collectionView.delegate = self
       collectionView.dataSource = self
       collectionView.register(StoryItemCell.self, forCellWithReuseIdentifier: StoryItemCell.reuseId)
-      collectionView.register(NormalPostCell.self, forCellWithReuseIdentifier: NormalPostCell.reuseId)
+      collectionView.register(PostCell.self, forCellWithReuseIdentifier: PostCell.reuseId)
       collectionView.register(ThreadsPostsCell.self, forCellWithReuseIdentifier: ThreadsPostsCell.reuseID)
       collectionView.register(PeopleSuggestionCell.self, forCellWithReuseIdentifier: PeopleSuggestionCell.reuseId)
    }
@@ -191,11 +191,11 @@ extension FeedVC: UICollectionViewDataSource {
          default:
             switch viewModel.allPosts[indexPath.item].type {
                case .normal(let data):
-                  let c = collectionView.dequeueReusableCell(withReuseIdentifier: NormalPostCell.reuseId, for: indexPath) as! NormalPostCell
+                  let c = collectionView.dequeueReusableCell(withReuseIdentifier: PostCell.reuseId, for: indexPath) as! PostCell
                   c.set(data)
                   cell = c
                case .ad(let data):
-                  let c = collectionView.dequeueReusableCell(withReuseIdentifier: NormalPostCell.reuseId, for: indexPath) as! NormalPostCell
+                  let c = collectionView.dequeueReusableCell(withReuseIdentifier: PostCell.reuseId, for: indexPath) as! PostCell
                   c.set(data)
                   cell = c
                case .threads(let data):

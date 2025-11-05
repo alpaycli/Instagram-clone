@@ -133,7 +133,7 @@ class ContainerView: UIView {
 }
 
 #Preview {
-   let v = NormalPostCell()
+   let v = PostCell()
    v.set(
       profileImageUrl: "",
       name: "alpaycli",

@@ -8,8 +8,8 @@
 import SafariServices
 import UIKit
 
-class NormalPostCell: UICollectionViewCell {
-   static let reuseId = "NormalPostCell"
+class PostCell: UICollectionViewCell {
+   static let reuseId = "PostCell"
       
    private var images: [String] = []
    
@@ -183,27 +183,21 @@ class NormalPostCell: UICollectionViewCell {
 
    
    override func prepareForReuse() {
-       super.prepareForReuse()
-
-       // Reset image cells
-       postImagesCollectionView.setContentOffset(.zero, animated: false)
-       postImagesCollectionView.reloadData()
-
-       // Reset images
-//       profileImageView.image = nil
-//       postImageView.image = nil
-
-//       profileImageView.cancelImageDownload()
-//       postImageView.cancelImageDownload()
-
-//       nameLabel.text = nil
-//       locationLabel.text = nil
-       likedByLabel.text = nil
-       descriptionLabel.text = nil
-       postDateLabel.text = nil
+      super.prepareForReuse()
+      
+      // reset values here
+      postImagesCollectionView.setContentOffset(.zero, animated: false)
+      postImagesCollectionView.reloadData()
+      
+      likedByLabel.text = nil
+      descriptionLabel.text = nil
+      postDateLabel.text = nil
       images = []
       
       shopNowBannerView.removeFromSuperview()
+      
+      pageControl.isHidden = false
+      pageIndicatorView.isHidden = false
    }
 
 
@@ -220,6 +214,10 @@ class NormalPostCell: UICollectionViewCell {
       pageControl.numberOfPages = model.images.count
       pageControl.currentPage = 0
       pageIndicatorView.set(currentIndex: 0, totalPageCount: images.count)
+      if images.count == 1 {
+         pageControl.isHidden = true
+         pageIndicatorView.isHidden = true
+      }
       
       likedByLabel.attributedText = NSMutableAttributedString()
          .normal("Liked by ", fontSize: 13)
@@ -251,6 +249,8 @@ class NormalPostCell: UICollectionViewCell {
       pageControl.numberOfPages = 0
       pageControl.currentPage = 0
       pageIndicatorView.set(currentIndex: 0, totalPageCount: images.count)
+      // ad only has 1 image
+      pageIndicatorView.isHidden = true
       
       likedByLabel.attributedText = NSMutableAttributedString()
          .normal("Liked by ", fontSize: 13)
@@ -387,7 +387,7 @@ class NormalPostCell: UICollectionViewCell {
    }
 }
 
-extension NormalPostCell: UICollectionViewDataSource {
+extension PostCell: UICollectionViewDataSource {
    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
       images.count
    }
@@ -403,7 +403,7 @@ extension NormalPostCell: UICollectionViewDataSource {
    }
 }
 
-extension NormalPostCell: UICollectionViewDelegate {
+extension PostCell: UICollectionViewDelegate {
    func scrollViewDidScroll(_ scrollView: UIScrollView) {
        let page = Int(round(scrollView.contentOffset.x / scrollView.bounds.width))
        pageControl.currentPage = page
@@ -412,7 +412,7 @@ extension NormalPostCell: UICollectionViewDelegate {
 
 }
 
-extension NormalPostCell: SFSafariViewControllerDelegate {}
+extension PostCell: SFSafariViewControllerDelegate {}
 
 class PostImageCell: UICollectionViewCell {
    static let reuseId = "PostImageCell"
