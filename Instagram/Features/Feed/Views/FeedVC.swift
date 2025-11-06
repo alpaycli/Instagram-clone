@@ -25,12 +25,16 @@ class FeedVC: UIViewController {
       configureCollectionView()
    }
    
+   override func viewWillAppear(_ animated: Bool) {
+      collectionView.reloadData()
+   }
+   
    private func configureNavigationBar() {
       let logoImageView = UIImageView(image: NavBarIcon.instaLogo)
       logoImageView.frame = CGRect(x: 0, y: 0, width: 100, height: 26)
       
       let dmNavButton = UIBarButtonItem(image: PostActionIcon.share, style: .plain, target: self, action: #selector(navBarDmButtonTapped))
-      let igTvButton = UIBarButtonItem(image: NavBarIcon.igTv, style: .plain, target: self, action: #selector(navBarIgTvButtonTapped))
+      let igTvButton = UIBarButtonItem(image: NavBarIcon.igTv.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(navBarIgTvButtonTapped))
       
       let cameraButton = UIBarButtonItem(image: .init(systemName: "camera"), style: .plain, target: self, action: #selector(navBarCameraButtonTapped))
       
@@ -85,6 +89,7 @@ extension FeedVC: UICollectionViewDataSource {
             let c = collectionView.dequeueReusableCell(withReuseIdentifier: StoryItemCell.reuseId, for: indexPath) as! StoryItemCell
             c.set(viewModel.allStories[indexPath.item])
             c.onStoryTapped = {
+               self.viewModel.allStories[indexPath.item].isSeen = true
                let vc = StoriesPreviewVC(stories: self.viewModel.allStories, index: indexPath.row)
                self.navigationController?.pushViewController(vc, animated: true)
             }
