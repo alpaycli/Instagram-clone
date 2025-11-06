@@ -56,7 +56,3 @@ class ThreadReactionsView: UIView {
    
    
 }
-
-#Preview {
-   ThreadReactionsView()
-}

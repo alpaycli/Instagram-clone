@@ -1,5 +1,5 @@
 {
-  "originHash" : "9149e2b147e3b81a90ef110e441b699db1cd08f7170e99f8eabe9dd3dce97c88",
+  "originHash" : "416bff9bf15a2c6bc1a31f1ef71c81d2b252a9aded164d1f449bc42155d5d492",
   "pins" : [
     {
       "identity" : "igstorybuttonkit",
@@ -8,15 +8,6 @@
       "state" : {
         "revision" : "5b2617f169275eac73545b281e8d69f98a172f1c",
         "version" : "1.0.2"
-      }
-    },
-    {
-      "identity" : "jsringview",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/jsantolaria/JSRingView",
-      "state" : {
-        "revision" : "13a4507f4f103d3ee689898e0ae609b2e6395f12",
-        "version" : "0.1.0"
       }
     },
     {

@@ -142,10 +142,3 @@ extension StoryItemCell {
       }.resume()
    }
 }
-
-#Preview {
-   let vc = StoriesPreviewVC(stories: StoryDataModel.mockData, index: 0)
-   let navcontroll = UINavigationController(rootViewController: vc)
-   
-   return navcontroll
-}

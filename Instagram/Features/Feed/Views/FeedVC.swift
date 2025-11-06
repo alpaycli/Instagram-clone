@@ -207,8 +207,3 @@ extension FeedVC {
    @objc private func navBarIgTvButtonTapped() {}
    @objc private func navBarCameraButtonTapped() {}
 }
-
-#Preview {
-   FeedVC()
-}
-

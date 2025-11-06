@@ -40,19 +40,3 @@ extension GFAvatarImageView {
        sd_cancelCurrentImageLoad()
     }
 }
-
-#Preview {
-   let v = PostCell()
-   v.set(
-      profileImageUrl: "",
-      name: "alpaycli",
-      location: "Crocusoft",
-      postImageUrl: "",
-      likedBy: "albert_l",
-      likeCount: 124,
-      description: " I'm happy to share that I have started a new position as iOS Developer Intern at Crocusoft!",
-      postDateLabel: .distantPast
-   )
-   
-   return v
-}

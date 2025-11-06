@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		C9099A752EB873DD00061E14 /* JSRingView in Frameworks */ = {isa = PBXBuildFile; productRef = C9099A742EB873DD00061E14 /* JSRingView */; };
 		C96A21502EB1182300B32F96 /* SDWebImage in Frameworks */ = {isa = PBXBuildFile; productRef = C96A214F2EB1182300B32F96 /* SDWebImage */; };
 		C96A21522EB1182300B32F96 /* SDWebImageMapKit in Frameworks */ = {isa = PBXBuildFile; productRef = C96A21512EB1182300B32F96 /* SDWebImageMapKit */; };
 		C970AF922EB895D7005C015D /* IGStoryButtonKit in Frameworks */ = {isa = PBXBuildFile; productRef = C970AF912EB895D7005C015D /* IGStoryButtonKit */; };
@@ -43,7 +42,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C9099A752EB873DD00061E14 /* JSRingView in Frameworks */,
 				C970AF922EB895D7005C015D /* IGStoryButtonKit in Frameworks */,
 				C96A21522EB1182300B32F96 /* SDWebImageMapKit in Frameworks */,
 				C96A21502EB1182300B32F96 /* SDWebImage in Frameworks */,
@@ -91,7 +89,6 @@
 			packageProductDependencies = (
 				C96A214F2EB1182300B32F96 /* SDWebImage */,
 				C96A21512EB1182300B32F96 /* SDWebImageMapKit */,
-				C9099A742EB873DD00061E14 /* JSRingView */,
 				C970AF912EB895D7005C015D /* IGStoryButtonKit */,
 			);
 			productName = Instagram;
@@ -124,7 +121,6 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				C96A214E2EB1182300B32F96 /* XCRemoteSwiftPackageReference "SDWebImage" */,
-				C9099A732EB873DD00061E14 /* XCRemoteSwiftPackageReference "JSRingView" */,
 				C970AF902EB895D7005C015D /* XCRemoteSwiftPackageReference "IGStoryButtonKit" */,
 			);
 			preferredProjectObjectVersion = 77;
@@ -172,7 +168,7 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 16;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -204,7 +200,7 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 16;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -367,14 +363,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		C9099A732EB873DD00061E14 /* XCRemoteSwiftPackageReference "JSRingView" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/jsantolaria/JSRingView";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.1.0;
-			};
-		};
 		C96A214E2EB1182300B32F96 /* XCRemoteSwiftPackageReference "SDWebImage" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SDWebImage/SDWebImage.git";
@@ -394,11 +382,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		C9099A742EB873DD00061E14 /* JSRingView */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C9099A732EB873DD00061E14 /* XCRemoteSwiftPackageReference "JSRingView" */;
-			productName = JSRingView;
-		};
 		C96A214F2EB1182300B32F96 /* SDWebImage */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = C96A214E2EB1182300B32F96 /* XCRemoteSwiftPackageReference "SDWebImage" */;

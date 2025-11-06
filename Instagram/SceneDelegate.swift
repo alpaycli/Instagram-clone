@@ -8,7 +8,6 @@
 import UIKit
 
 // TODO: Divider between stories and posts sections
-// TODO: Post image change from tab indicator fix
 // TODO: Deployment target
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
