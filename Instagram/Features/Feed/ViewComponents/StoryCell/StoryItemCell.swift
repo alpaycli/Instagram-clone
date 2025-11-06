@@ -1,5 +1,5 @@
 //
-//  StoryCell.swift
+//  StoryItemCell.swift
 //  Instagram
 //
 //  Created by Alpay Calalli on 28.10.25.
@@ -84,8 +84,9 @@ class StoryItemCell: UICollectionViewCell {
          button.widthAnchor.constraint(equalToConstant: 62),
          
          usernameLabel.topAnchor.constraint(equalTo: button.bottomAnchor, constant: 5),
-         usernameLabel.centerXAnchor.constraint(equalTo: button.centerXAnchor),
-         usernameLabel.heightAnchor.constraint(equalToConstant: 24)
+         usernameLabel.leadingAnchor.constraint(equalTo: button.leadingAnchor),
+         usernameLabel.trailingAnchor.constraint(equalTo: button.trailingAnchor),
+         usernameLabel.heightAnchor.constraint(equalToConstant: 24),
       ])
       
    }

@@ -7,17 +7,8 @@
 
 import UIKit
 
-// TODO: PostCell - cleaning
-// TODO: Liked by userin imagei yoxdu
 // TODO: Divider between stories and posts sections
-// TODO: Story - isSeen only updates when cells reappears
-// TODO: PostDateLabel fix
-// TODO: 5h (timeLabel) in threads fix
-// TODO: Stack viewlari lazy var-a kecirtmek belke
-// TODO: Stories spacing
 // TODO: Post image change from tab indicator fix
-// TODO: Accessibility - dynamic type
-// TODO: Representablelari temizlemek
 // TODO: Deployment target
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
