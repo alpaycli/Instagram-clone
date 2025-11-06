@@ -269,7 +269,7 @@ extension PostCell {
       descriptionLabel.attributedText = NSMutableAttributedString()
          .bold(model.username, fontSize: 13)
          .normal(" \(model.description)", fontSize: 13)
-      postDateLabel.text = model.createdAt.formatted()
+      postDateLabel.text = model.createdAt.format("MMMM d")
    }
    
    func set(_ model: AdPostModel) {

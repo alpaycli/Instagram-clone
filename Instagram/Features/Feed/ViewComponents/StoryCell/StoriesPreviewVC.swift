@@ -1,146 +1,17 @@
 //
-//  StoryCell.swift
+//  StoriesPreviewVC.swift
 //  Instagram
 //
-//  Created by Alpay Calalli on 28.10.25.
+//  Created by Alpay Calalli on 05.11.25.
 //
 
 import UIKit
 
-class StoryItemCell: UICollectionViewCell {
-   static let reuseId = "StoryItemCell"
-   
-   private lazy var button: IGStoryButton = {
-      let button = IGStoryButton()
-      button.backgroundColor = .black
-      button.frame = CGRect(origin: CGPoint(x: center.x - 50 / 2.0, y: center.y - 50 / 2.0), size: CGSize(width: 50, height: 50))
-      button.condition = .init(
-         display: .unseen,
-         color: .custom(
-            colors: [
-               .init(hexString: "#FBAA47"),
-               .init(hexString: "#D91A46"),
-               .init(hexString: "#A60F93"),
-            ]
-         )
-      )
-      
-      button.delegate = self
-      
-      button.translatesAutoresizingMaskIntoConstraints = false
-      return button
-  }()
-   
-   private lazy var liveIndicatorView: StoryLiveIndicatorView = {
-      let v = StoryLiveIndicatorView()
-      
-      v.translatesAutoresizingMaskIntoConstraints = false
-      return v
-   }()
-   
-   private lazy var usernameLabel: IGTitleLabel = {
-      let l = IGTitleLabel(textAlignment: .center, fontSize: 12, weight: .regular)
-      
-      return l
-   }()
-   
-   var onNavigation: (() -> Void) = {}
-   
-   override init(frame: CGRect) {
-      super.init(frame: frame)
-      layoutUI()
-   }
-   
-   override func prepareForReuse() {
-      super.prepareForReuse()
-      button.image = nil
-      button.condition = .init(display: .none)
-      
-      usernameLabel.text = nil
-   }
-   
-   required init?(coder: NSCoder) {
-      fatalError("init(coder:) has not been implemented")
-   }
-   
-   func set(_ story: StoryDataModel) {
-      usernameLabel.text = story.username
-      layoutLiveIndicatorViewIfNeeded(isLive: story.isLive)
-      button.condition = .init(display: story.isSeen ? .seen : .unseen)
-      
-      if let imageUrl = story.userPhoto {
-         loadImage(from: imageUrl) { [weak self] image in
-            self?.button.image = image
-         }
-      }
-   }
-   
-   private func layoutUI() {
-      addSubviews(button, usernameLabel)
-      NSLayoutConstraint.activate([
-         button.topAnchor.constraint(equalTo: topAnchor),
-         button.leadingAnchor.constraint(equalTo: leadingAnchor),
-         button.heightAnchor.constraint(equalToConstant: 62),
-         button.widthAnchor.constraint(equalToConstant: 62),
-         
-         usernameLabel.topAnchor.constraint(equalTo: button.bottomAnchor, constant: 5),
-         usernameLabel.centerXAnchor.constraint(equalTo: button.centerXAnchor),
-         usernameLabel.heightAnchor.constraint(equalToConstant: 24)
-      ])
-
-   }
-   
-   private func layoutLiveIndicatorViewIfNeeded(isLive: Bool) {
-      guard isLive else { return }
-      
-      addSubview(liveIndicatorView)
-      NSLayoutConstraint.activate([
-         liveIndicatorView.centerYAnchor.constraint(equalTo: button.bottomAnchor, constant: 4),
-         liveIndicatorView.centerXAnchor.constraint(equalTo: button.centerXAnchor),
-         liveIndicatorView.heightAnchor.constraint(equalToConstant: 16),
-         liveIndicatorView.widthAnchor.constraint(equalToConstant: 26),
-      ])
-      bringSubviewToFront(liveIndicatorView)
-   }
-}
-
-extension StoryItemCell: IGStoryButtonDelegate {
-   func didLongPressed() {}
-   
-   func didTapped() {
-      button.condition = .init(display: .seen)
-      onNavigation()
-   }
-}
-
-extension StoryItemCell {
-   private func loadImage(from urlString: String, completion: @escaping (UIImage?) -> Void) {
-       guard let url = URL(string: urlString) else {
-           print("Invalid URL")
-           completion(nil)
-           return
-       }
-
-       URLSession.shared.dataTask(with: url) { data, response, error in
-           if let error = error {
-               print("Error downloading image: \(error.localizedDescription)")
-               completion(nil)
-               return
-           }
-
-           guard let data = data else {
-               print("No image data received")
-               completion(nil)
-               return
-           }
-
-           // Create UIImage on the main thread
-           DispatchQueue.main.async {
-               let image = UIImage(data: data)
-               completion(image)
-           }
-       }.resume()
-   }
+protocol StoriesPreviewViewModelOutput: AnyObject {
+   func timerUpdated()
+   func showNextStory(withIndex index: Int, stories: [StoryDataModel])
+   func showPreviousStory(withIndex index: Int, stories: [StoryDataModel])
+   func close()
 }
 
 class StoriesPreviewVC: UIViewController {
@@ -161,7 +32,7 @@ class StoriesPreviewVC: UIViewController {
       let btn = UIButton()
       let symbolConfig = UIImage.SymbolConfiguration(font: .systemFont(ofSize: 32))
       let image = UIImage(systemName: "xmark", withConfiguration: symbolConfig)
-
+      
       btn.setImage(image, for: .normal)
       btn.tintColor = .white
       btn.addTarget(self, action: #selector(closeButtonTapped), for: .touchUpInside)
@@ -173,7 +44,7 @@ class StoriesPreviewVC: UIViewController {
    @objc func closeButtonTapped() {
       navigationController?.popToRootViewController(animated: true)
    }
-      
+   
    private lazy var userInfoStackView: UIStackView = {
       let sv = UIStackView()
       sv.addArrangedSubview(profileImageView)
@@ -229,7 +100,7 @@ class StoriesPreviewVC: UIViewController {
       return v
       
    }()
-
+   
    private lazy var rightHalfOfScreen: UIView = {
       let v = UIView()
       v.frame = .init(x: UIScreen.main.bounds.width / 2, y: 0, width: UIScreen.main.bounds.width / 2, height: UIScreen.main.bounds.height)
@@ -242,7 +113,7 @@ class StoriesPreviewVC: UIViewController {
       return v
       
    }()
-      
+   
    private lazy var imageView: GFAvatarImageView = {
       let v = GFAvatarImageView(frame: .zero)
       if let url = viewModel.currentStory?.storyUrl {
@@ -279,34 +150,34 @@ class StoriesPreviewVC: UIViewController {
    override func viewDidLoad() {
       viewModel.output = self
       layoutUI()
-//      configureStoryTimer()
+      //      configureStoryTimer()
       viewModel.configureStoryTimer()
    }
    
-//   func configureStoryTimer() {
-//      viewModel.timer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { timer in
-//           // 5 seconds total / 0.05 interval = 100 ticks → each tick should add 1/100 = 0.01
-//           if self.progressBarView.progress < 1 {
-//              self.progressBarView.setProgress(self.progressBarView.progress + 0.01, animated: true)
-//              
-//           } else {
-//               self.viewModel.handleForwardAction()
-//               timer.invalidate()
-//           }
-//       }
-//   }
-
+   //   func configureStoryTimer() {
+   //      viewModel.timer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { timer in
+   //           // 5 seconds total / 0.05 interval = 100 ticks → each tick should add 1/100 = 0.01
+   //           if self.progressBarView.progress < 1 {
+   //              self.progressBarView.setProgress(self.progressBarView.progress + 0.01, animated: true)
+   //
+   //           } else {
+   //               self.viewModel.handleForwardAction()
+   //               timer.invalidate()
+   //           }
+   //       }
+   //   }
+   
    override func viewWillAppear(_ animated: Bool) {
-       super.viewWillAppear(animated)
-       // Hide the navigation bar when this view controller appears
-       self.navigationController?.setNavigationBarHidden(true, animated: animated)
+      super.viewWillAppear(animated)
+      // Hide the navigation bar when this view controller appears
+      self.navigationController?.setNavigationBarHidden(true, animated: animated)
    }
-
+   
    override func viewWillDisappear(_ animated: Bool) {
-       super.viewWillDisappear(animated)
-       // Show the navigation bar again when this view controller disappears
-       // This is important if you want the navigation bar to reappear in other view controllers
-       self.navigationController?.setNavigationBarHidden(false, animated: animated)
+      super.viewWillDisappear(animated)
+      // Show the navigation bar again when this view controller disappears
+      // This is important if you want the navigation bar to reappear in other view controllers
+      self.navigationController?.setNavigationBarHidden(false, animated: animated)
    }
    
    private func layoutUI() {
@@ -348,7 +219,7 @@ extension StoriesPreviewVC: StoriesPreviewViewModelOutput {
          self.progressBarView.setProgress(self.progressBarView.progress + 0.01, animated: true)
          
       } else {
-          self.viewModel.handleForwardAction()
+         self.viewModel.handleForwardAction()
          viewModel.timer?.invalidate()
       }
    }
@@ -363,7 +234,7 @@ extension StoriesPreviewVC: StoriesPreviewViewModelOutput {
       transition.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
       navigationController?.view.layer.add(transition, forKey: kCATransition)
       navigationController?.pushViewController(vc, animated: true)
-
+      
    }
    
    func showPreviousStory(withIndex index: Int, stories: [StoryDataModel]) {
@@ -381,81 +252,4 @@ extension StoriesPreviewVC: StoriesPreviewViewModelOutput {
    func close() {
       navigationController?.popToRootViewController(animated: true)
    }
-   
-   
-}
-
-protocol StoriesPreviewViewModelOutput: AnyObject {
-   func timerUpdated()
-    func showNextStory(withIndex index: Int, stories: [StoryDataModel])
-   func showPreviousStory(withIndex index: Int, stories: [StoryDataModel])
-   func close()
-}
-
-class StoriesPreviewViewModel {
-   private var currentStoryIndex: Int
-   private var stories: [StoryDataModel]
-   
-   /// To control story duration
-   var timer: Timer?
-   
-   var currentStory: StoryModel? {
-      stories[currentStoryIndex].storyModel
-   }
-   
-   weak var output: StoriesPreviewViewModelOutput?
-   
-   init(stories: [StoryDataModel], currentStoryIndex: Int) {
-      self.stories = stories
-      self.currentStoryIndex = currentStoryIndex
-   }
-   
-   func configureStoryTimer() {
-      timer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { timer in
-           // 5 seconds total / 0.05 interval = 100 ticks → each tick should add 1/100 = 0.01
-         self.output?.timerUpdated()
-       }
-   }
-   
-   func handleForwardAction() {
-      timer?.invalidate()
-      guard currentStoryIndex + 1 < stories.count else {
-         output?.close()
-         return
-      }
-      
-      currentStoryIndex += 1
-      output?.showNextStory(withIndex: currentStoryIndex, stories: stories)
-      
-      stories[currentStoryIndex].isSeen = true
-   }
-   
-   @objc func leftSideOfScreenTapped() {
-      timer?.invalidate()
-      guard currentStoryIndex > 0 else { return }
-      
-     currentStoryIndex -= 1
-      output?.showPreviousStory(withIndex: currentStoryIndex, stories: stories)
-      
-      stories[currentStoryIndex].isSeen = true
-   }
-   
-   @objc func leftSideOfScreenLongPressed(_ gestureRecognizer: UILongPressGestureRecognizer) {
-      if gestureRecognizer.state == .began {
-         timer?.invalidate()
-      } else if gestureRecognizer.state == .ended {
-         configureStoryTimer()
-      }
-   }
-   
-   @objc func rightSideOfScreenTapped() {
-      handleForwardAction()
-   }
-}
-
-#Preview {
-   let vc = StoriesPreviewVC(stories: StoryDataModel.mockData, index: 0)
-   let navcontroll = UINavigationController(rootViewController: vc)
-   
-   return navcontroll
 }

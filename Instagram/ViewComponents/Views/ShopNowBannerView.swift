@@ -29,8 +29,7 @@ class ShopNowBannerView: UIView {
    
    override init(frame: CGRect) {
       super.init(frame: frame)
-      backgroundColor = .init(hexString: "#3997F1")
-      
+      setupUI()
       layoutUI()
    }
    
@@ -38,10 +37,14 @@ class ShopNowBannerView: UIView {
       fatalError("init(coder:) has not been implemented")
    }
    
-   private func layoutUI() {
+   private func setupUI() {
+      backgroundColor = .init(hexString: "#3997F1")
       addSubviews(titleLabel, arrowImageView)
       
       translatesAutoresizingMaskIntoConstraints = false
+   }
+   
+   private func layoutUI() {
       
       let horizontalPadding: CGFloat = 11
       let verticalPadding: CGFloat = 7

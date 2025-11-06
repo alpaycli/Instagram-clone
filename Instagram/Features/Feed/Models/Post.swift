@@ -1,11 +1,9 @@
 import Foundation
 
-// MARK: - Welcome
 struct PostResponse: Codable {
    let data: [PostModel]
 }
 
-// MARK: - Datum
 struct PostModel: Codable {
    let postType: String
    let data: Post
@@ -19,67 +17,8 @@ struct PostModel: Codable {
          default: .normal(.init(post: data))
       }
    }
-   
-   static let sampleModel: Self = .init(postType: "normal", data: Post(id: "id2"))
-   static let mockData: [Self] = [
-      .init(
-         postType: "normal",
-         data: .init(
-            likeCount: 120,
-            likedBy: ["mike.s"],
-            description: "Nice post description",
-            username: "cristiano",
-            createdAt: .distantPast,
-            location: "Baku, Azerbaijan",
-            images: [
-               "https://t4.ftcdn.net/jpg/04/57/50/41/360_F_457504159_nEcxnfFqE9O1jaogLTh4bviUPPQ7xncW.jpg",
-               "https://t4.ftcdn.net/jpg/04/57/50/41/360_F_457504159_nEcxnfFqE9O1jaogLTh4bviUPPQ7xncW.jpg",
-               "https://t4.ftcdn.net/jpg/04/57/50/41/360_F_457504159_nEcxnfFqE9O1jaogLTh4bviUPPQ7xncW.jpg"
-            ]
-         )
-      ),
-      .init(postType: "threads", data: .init(
-         id: "id4",
-         threadTitle: "Ad description",
-         joinCount: 129,
-         posts: [
-            .init(id: "921391", ownerPhoto: "", username: "ivicazubac", createdAt: .distantPast, image: nil, text: "Salam bu threads textidir", likeCount: 290, commentCount: 15, repostCount: 9, sharedCount: 3),
-            .init(id: "221391", ownerPhoto: "", username: "bradley.b", createdAt: .distantPast, image: "https://t4.ftcdn.net/jpg/04/57/50/41/360_F_457504159_nEcxnfFqE9O1jaogLTh4bviUPPQ7xncW.jpg", text: "Salam bu threads textidir", likeCount: 90, commentCount: 15, repostCount: 9, sharedCount: 3),
-            .init(id: "2213", ownerPhoto: "", username: "marklall", createdAt: .distantPast, image: "https://files.azedu.az/articles/2024/02/08/96130.jpg", text: "Salam bu threads textidir", likeCount: 20, commentCount: 15, repostCount: 9, sharedCount: 3)
-         ]
-      )),
-      .init(postType: "normal", data:       .init(
-         id: "id5",
-         description: "One Another post description",
-         images: [
-            "https://t4.ftcdn.net/jpg/04/57/50/41/360_F_457504159_nEcxnfFqE9O1jaogLTh4bviUPPQ7xncW.jpg",
-            "https://t4.ftcdn.net/jpg/04/57/50/41/360_F_457504159_nEcxnfFqE9O1jaogLTh4bviUPPQ7xncW.jpg"
-         ]
-      )),
-      .init(
-         postType: "people_suggestion",
-         data: .init(
-            suggestions: [
-               .init(fullName: "Clippers BC", username: "clippers", photo: "https://t4.ftcdn.net/jpg/04/57/50/41/360_F_457504159_nEcxnfFqE9O1jaogLTh4bviUPPQ7xncW.jpg"),
-               .init(fullName: "kawhileonard", username: "kawhileonard", photo: ""),
-               .init(fullName: "Mark Cuban", username: "mkkk333", photo: "https://t4.ftcdn.net/jpg/04/57/50/41/360_F_457504159_nEcxnfFqE9O1jaogLTh4bviUPPQ7xncW.jpg")
-            ]
-         )
-      ),
-      .init(postType: "normal", data:       .init(
-         id: "id5",
-         description: "One Another post description",
-         images: [
-            "https://t4.ftcdn.net/jpg/04/57/50/41/360_F_457504159_nEcxnfFqE9O1jaogLTh4bviUPPQ7xncW.jpg",
-            "https://t4.ftcdn.net/jpg/04/57/50/41/360_F_457504159_nEcxnfFqE9O1jaogLTh4bviUPPQ7xncW.jpg"
-         ]
-      )),
-
-      
-   ]
 }
 
-// MARK: - DataClass
 struct Post: Codable {
    let id, advertiserName: String?
    let advertiserPhoto, image: String?
@@ -139,73 +78,64 @@ struct Post: Codable {
       self.posts = posts
       self.suggestions = suggestions
    }
-   
-   
 }
 
-// MARK: - Post
-struct ThreadPost: Codable {
-   let id: String
-   let ownerPhoto: String
-   let username: String
-   let createdAt: Date?
-   let image: String?
-   let text: String?
-   let likeCount, commentCount, repostCount, sharedCount: Int
-   
-   init(id: String, ownerPhoto: String, username: String, createdAt: Date?, image: String?, text: String?, likeCount: Int, commentCount: Int, repostCount: Int, sharedCount: Int) {
-      self.id = id
-      self.ownerPhoto = ownerPhoto
-      self.username = username
-      self.createdAt = createdAt
-      self.image = image
-      self.text = text
-      self.likeCount = likeCount
-      self.commentCount = commentCount
-      self.repostCount = repostCount
-      self.sharedCount = sharedCount
-   }
-   
-   
-   /// Mock
-   init(
-      id: String = "",
-      ownerPhoto: String = "",
-      username: String = "",
-      createdAt: Date? = nil,
-      image: String? = "",
-      text: String? = "",
-      likeCount: Int = 0,
-      commentCount: Int = 0,
-      repostCount: Int = 0,
-   ) {
-      self.id = id
-      self.ownerPhoto = ownerPhoto
-      self.username = username
-      self.createdAt = createdAt
-      self.image = image
-      self.text = text
-      self.likeCount = likeCount
-      self.commentCount = commentCount
-      self.repostCount = repostCount
-      self.sharedCount = 0
-   }
-   
-}
+extension PostModel {
+   static let sampleModel: Self = .init(postType: "normal", data: Post(id: "id2"))
+   static let mockData: [Self] = [
+      .init(
+         postType: "normal",
+         data: .init(
+            likeCount: 120,
+            likedBy: ["mike.s"],
+            description: "Nice post description",
+            username: "cristiano",
+            createdAt: .distantPast,
+            location: "Baku, Azerbaijan",
+            images: [
+               "https://t4.ftcdn.net/jpg/04/57/50/41/360_F_457504159_nEcxnfFqE9O1jaogLTh4bviUPPQ7xncW.jpg",
+               "https://t4.ftcdn.net/jpg/04/57/50/41/360_F_457504159_nEcxnfFqE9O1jaogLTh4bviUPPQ7xncW.jpg",
+               "https://t4.ftcdn.net/jpg/04/57/50/41/360_F_457504159_nEcxnfFqE9O1jaogLTh4bviUPPQ7xncW.jpg"
+            ]
+         )
+      ),
+      .init(postType: "threads", data: .init(
+         id: "id4",
+         threadTitle: "Ad description",
+         joinCount: 129,
+         posts: [
+            .init(id: "921391", ownerPhoto: "", username: "ivicazubac", createdAt: .distantPast, image: nil, text: "Salam bu threads textidir", likeCount: 290, commentCount: 15, repostCount: 9, sharedCount: 3),
+            .init(id: "221391", ownerPhoto: "", username: "bradley.b", createdAt: .distantPast, image: "https://t4.ftcdn.net/jpg/04/57/50/41/360_F_457504159_nEcxnfFqE9O1jaogLTh4bviUPPQ7xncW.jpg", text: "Salam bu threads textidir", likeCount: 90, commentCount: 15, repostCount: 9, sharedCount: 3),
+            .init(id: "2213", ownerPhoto: "", username: "marklall", createdAt: .distantPast, image: "https://files.azedu.az/articles/2024/02/08/96130.jpg", text: "Salam bu threads textidir", likeCount: 20, commentCount: 15, repostCount: 9, sharedCount: 3)
+         ]
+      )),
+      .init(postType: "normal", data:       .init(
+         id: "id5",
+         description: "One Another post description",
+         images: [
+            "https://t4.ftcdn.net/jpg/04/57/50/41/360_F_457504159_nEcxnfFqE9O1jaogLTh4bviUPPQ7xncW.jpg",
+            "https://t4.ftcdn.net/jpg/04/57/50/41/360_F_457504159_nEcxnfFqE9O1jaogLTh4bviUPPQ7xncW.jpg"
+         ]
+      )),
+      .init(
+         postType: "people_suggestion",
+         data: .init(
+            suggestions: [
+               .init(fullName: "Clippers BC", username: "clippers", photo: "https://t4.ftcdn.net/jpg/04/57/50/41/360_F_457504159_nEcxnfFqE9O1jaogLTh4bviUPPQ7xncW.jpg"),
+               .init(fullName: "kawhileonard", username: "kawhileonard", photo: ""),
+               .init(fullName: "Mark Cuban", username: "mkkk333", photo: "https://t4.ftcdn.net/jpg/04/57/50/41/360_F_457504159_nEcxnfFqE9O1jaogLTh4bviUPPQ7xncW.jpg")
+            ]
+         )
+      ),
+      .init(postType: "normal", data:       .init(
+         id: "id5",
+         description: "One Another post description",
+         images: [
+            "https://t4.ftcdn.net/jpg/04/57/50/41/360_F_457504159_nEcxnfFqE9O1jaogLTh4bviUPPQ7xncW.jpg",
+            "https://t4.ftcdn.net/jpg/04/57/50/41/360_F_457504159_nEcxnfFqE9O1jaogLTh4bviUPPQ7xncW.jpg"
+         ]
+      )),
 
-// MARK: - Suggestion
-
-struct PeopleSuggestion: Codable {
-   let fullName, username: String
-   let photo: String
-}
-
-struct PeopleSuggestionsModel {
-   let suggestions: [PeopleSuggestion]
-   
-   init() { suggestions = [] }
-   
-   init(post: Post) {
-      self.suggestions = post.suggestions ?? []
-   }
+      
+   ]
 }

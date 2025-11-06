@@ -8,7 +8,8 @@
 import UIKit
 
 class PostPageIndicatorView: UIView {
-   private var currentIndexLabel: IGTitleLabel = {
+   
+   private lazy var currentIndexLabel: IGTitleLabel = {
       let l = IGTitleLabel(textAlignment: .left, fontSize: 12, weight: .medium)
       l.textColor = .white
       return l
@@ -17,11 +18,13 @@ class PostPageIndicatorView: UIView {
    init(totalPageCount: Int, currentIndex: Int = 0) {
       super.init(frame: .zero)
       self.currentIndexLabel.text = "\(currentIndex + 1)/\(totalPageCount)"
+      setupUI()
       layoutUI()
    }
    
    override init(frame: CGRect) {
       super.init(frame: frame)
+      setupUI()
       layoutUI()
    }
    
@@ -33,13 +36,16 @@ class PostPageIndicatorView: UIView {
       currentIndexLabel.text = "\(currentIndex + 1)/\(totalPageCount)"
    }
    
-   private func layoutUI() {
+   private func setupUI() {
       addSubviews(currentIndexLabel)
       backgroundColor = .init(resource: .pageIndicatorBackground)
       clipsToBounds = true
       layer.cornerRadius = 13
       
       translatesAutoresizingMaskIntoConstraints = false
+   }
+   
+   private func layoutUI() {
       NSLayoutConstraint.activate([
          currentIndexLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
          currentIndexLabel.centerYAnchor.constraint(equalTo: centerYAnchor),

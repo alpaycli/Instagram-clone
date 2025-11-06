@@ -20,16 +20,6 @@ final class GFAvatarImageView: UIImageView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-   
-//   override func layoutSubviews() {
-//      layer.cornerRadius = bounds.width / 2
-//   }
-//   override func layoutSubviews() {
-//       super.layoutSubviews()
-//       layer.cornerRadius = bounds.width / 2
-//       clipsToBounds = true
-//   }
-
     
     private func configure() {
 //        layer.cornerRadius = 10
@@ -43,44 +33,6 @@ final class GFAvatarImageView: UIImageView {
         guard let url = URL(string: urlString) else { return }
         sd_setImage(with: url, placeholderImage: placeholderImage)
     }
-   
-   override func draw(_ rect: CGRect) {
-
-           var path = UIBezierPath()
-           path = UIBezierPath(ovalIn: CGRect(x: 50, y: 50, width: 100, height: 100))
-           UIColor.yellow.setStroke()
-           UIColor.red.setFill()
-           path.lineWidth = 5
-           path.stroke()
-           path.fill()
-
-
-       }
-    
-   func addOuterBorder(color: UIColor, width: CGFloat) {
-       // Remove any previous border views if you call this multiple times
-       superview?.subviews.filter { $0.tag == 999 }.forEach { $0.removeFromSuperview() }
-       
-       // Ensure layout is up-to-date
-       layoutIfNeeded()
-       
-       // Create a circular view slightly larger than the avatar
-       let outerDiameter = bounds.width + (width * 2)
-       let outerCircle = UIView(frame: CGRect(
-           x: center.x - outerDiameter / 2,
-           y: center.y - outerDiameter / 2,
-           width: outerDiameter,
-           height: outerDiameter
-       ))
-       
-       outerCircle.backgroundColor = color
-       outerCircle.layer.cornerRadius = outerDiameter / 2
-       outerCircle.tag = 999
-       
-       // Insert below the image view
-       superview?.insertSubview(outerCircle, aboveSubview: self)
-   }
-
 }
 
 extension GFAvatarImageView {

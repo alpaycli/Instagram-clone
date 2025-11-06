@@ -8,7 +8,7 @@
 import Foundation
 
 protocol FeedViewModelOutput: AnyObject {
-   func updateView(with characters: [PostModel])
+   func updateView()
 }
 
 class FeedViewModel {
@@ -26,17 +26,13 @@ class FeedViewModel {
       var urlRequest = URLRequest(url: url)
       urlRequest.timeoutInterval = 20
       
-//      isLoadingCharacters = true
       do {
          let response = try await networkManager.fetch(PostResponse.self, url: urlRequest)
          let result = response.data
-         print("response.data.count", response.data.count)
          allPosts = result
-         output?.updateView(with: allPosts)
-//         isLoadingCharacters = false
+         output?.updateView()
       } catch {
          print("Error with network request", error.localizedDescription)
-//         isLoadingCharacters = false
       }
       
       
@@ -49,13 +45,11 @@ class FeedViewModel {
       var urlRequest = URLRequest(url: url)
       urlRequest.timeoutInterval = 20
       
-//      isLoadingCharacters = true
       do {
          let response = try await networkManager.fetch(StoryResponse.self, url: urlRequest)
          let result = response.data
-         print("response.data.count", response.data.count)
          allStories = result.map({ StoryDataModel(storyModel: $0) })
-         output?.updateView(with: allPosts)
+         output?.updateView()
          
          let yourStory = StoryDataModel(
             storyModel: .init(
@@ -69,7 +63,5 @@ class FeedViewModel {
       } catch {
          print("Error with network request", error.localizedDescription)
       }
-      
-      
    }
 }

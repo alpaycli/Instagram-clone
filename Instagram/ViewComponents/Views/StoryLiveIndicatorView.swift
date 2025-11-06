@@ -21,18 +21,19 @@ class StoryLiveIndicatorView: UIView {
       l.translatesAutoresizingMaskIntoConstraints = false
       return l
    }()
-
+   
    private var gradientLayer: CAGradientLayer?
-
+   
    override init(frame: CGRect) {
       super.init(frame: frame)
+      setupUI()
       layoutUI()
    }
    
    required init?(coder: NSCoder) {
       fatalError("init(coder:) has not been implemented")
    }
-
+   
    override func layoutSubviews() {
       super.layoutSubviews()
       setupGradientBackground()
@@ -57,13 +58,15 @@ class StoryLiveIndicatorView: UIView {
       gradientLayer = gradient
    }
    
-   private func layoutUI() {
+   private func setupUI() {
       addSubview(titleLabel)
       clipsToBounds = true
       layer.cornerRadius = 3
       layer.borderWidth = 2
       layer.borderColor = UIColor(hexString: "#FEFEFE").cgColor
-      
+   }
+   
+   private func layoutUI() {
       NSLayoutConstraint.activate([
          titleLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
          titleLabel.centerYAnchor.constraint(equalTo: centerYAnchor),

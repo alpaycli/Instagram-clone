@@ -10,16 +10,15 @@ import UIKit
 
 final class PostHeaderView: UIView {
    
-   // MARK: - External Action
    var onOptionsTapped: (() -> Void)?
    
-   // MARK: - UI Components
    private let avatarImageView: GFAvatarImageView = {
       let iv = GFAvatarImageView(frame: .zero)
       iv.contentMode = .scaleAspectFill
       iv.layer.cornerRadius = 16
       iv.layer.masksToBounds = true
       iv.backgroundColor = .systemGray5
+      
       iv.translatesAutoresizingMaskIntoConstraints = false
       return iv
    }()
@@ -40,6 +39,7 @@ final class PostHeaderView: UIView {
       let stack = UIStackView(arrangedSubviews: [titleLabel, subtitleLabel])
       stack.axis = .vertical
       stack.spacing = 2
+      
       return stack
    }()
    
@@ -48,6 +48,7 @@ final class PostHeaderView: UIView {
       btn.setImage(UIImage(systemName: "ellipsis"), for: .normal)
       btn.tintColor = .label
       btn.addTarget(self, action: #selector(optionsTapped), for: .touchUpInside)
+      
       return btn
    }()
    
@@ -56,6 +57,8 @@ final class PostHeaderView: UIView {
       stack.axis = .horizontal
       stack.alignment = .center
       stack.spacing = 12
+      
+      stack.translatesAutoresizingMaskIntoConstraints = false
       return stack
    }()
    
@@ -70,7 +73,6 @@ final class PostHeaderView: UIView {
    
    private func layoutUI() {
       addSubview(mainStack)
-      mainStack.translatesAutoresizingMaskIntoConstraints = false
       
       NSLayoutConstraint.activate([
          mainStack.topAnchor.constraint(equalTo: topAnchor, constant: 8),

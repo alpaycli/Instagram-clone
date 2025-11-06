@@ -48,6 +48,7 @@ class PeopleSuggestionItemCell: UICollectionViewCell {
       btn.backgroundColor = .init(hexString: "495DF9")
       btn.titleLabel?.font = UIFont.systemFont(ofSize: 14, weight: .bold)
       btn.layer.cornerRadius = 7
+      btn.addTarget(self, action: #selector(followButtonTapped), for: .touchUpInside)
       
       btn.translatesAutoresizingMaskIntoConstraints = false
       return btn
@@ -121,5 +122,20 @@ class PeopleSuggestionItemCell: UICollectionViewCell {
          actionButton.heightAnchor.constraint(equalToConstant: 31),
          actionButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -12)
       ])
+   }
+   
+   @objc private func followButtonTapped() {
+      if actionButton.titleLabel?.text == "Follow" {
+         actionButton.setTitle("Following", for: .normal)
+         actionButton.setTitleColor(.init(hexString: "495DF9"), for: .normal)
+         actionButton.layer.borderColor = UIColor(hexString: "495DF9").cgColor
+         actionButton.layer.borderWidth = 1
+         actionButton.backgroundColor = .white
+      } else {
+         actionButton.setTitle("Follow", for: .normal)
+         actionButton.backgroundColor = .init(hexString: "495DF9")
+         actionButton.setTitleColor(.white, for: .normal)
+         actionButton.layer.borderWidth = 0
+      }
    }
 }

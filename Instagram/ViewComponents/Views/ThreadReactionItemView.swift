@@ -9,10 +9,17 @@ import UIKit
 
 class ThreadReactionItemView: UIView {
    
-   private let stackView = UIStackView()
-   
-   private var buttonAction: () -> Void = {}
-   
+   private lazy var stackView: UIStackView = {
+      let sv = UIStackView()
+      sv.axis = .horizontal
+      sv.spacing = 8
+      sv.addArrangedSubview(actionButton)
+      sv.addArrangedSubview(label)
+      
+      sv.translatesAutoresizingMaskIntoConstraints = false
+      return sv
+   }()
+      
    private lazy var actionButton: UIButton = {
       let btn = UIButton()
       btn.tintColor = .label
@@ -28,18 +35,20 @@ class ThreadReactionItemView: UIView {
       l.adjustsFontSizeToFitWidth = true
       l.minimumScaleFactor = 0.9
       l.lineBreakMode = .byTruncatingTail
+      
       l.translatesAutoresizingMaskIntoConstraints = false
-
       return l
    }()
    
+   private var buttonAction: () -> Void = {}
+   
    override init(frame: CGRect) {
-       super.init(frame: frame)
-       layoutUI()
+      super.init(frame: frame)
+      layoutUI()
    }
    
    required init?(coder: NSCoder) {
-       fatalError("init(coder:) has not been implemented")
+      fatalError("init(coder:) has not been implemented")
    }
    
    func set(image: UIImage, label: String, buttonAction: @escaping () -> Void) {
@@ -49,13 +58,7 @@ class ThreadReactionItemView: UIView {
    }
    
    private func layoutUI() {
-      stackView.axis = .horizontal
-      stackView.spacing = 8
       addSubview(stackView)
-      stackView.addArrangedSubview(actionButton)
-      stackView.addArrangedSubview(label)
-      
-      stackView.translatesAutoresizingMaskIntoConstraints = false
       NSLayoutConstraint.activate([
          stackView.leadingAnchor.constraint(equalTo: leadingAnchor),
          stackView.topAnchor.constraint(equalTo: topAnchor),
@@ -65,6 +68,6 @@ class ThreadReactionItemView: UIView {
    }
    
    @objc func buttonTapped() {
-       buttonAction()
+      buttonAction()
    }
 }
