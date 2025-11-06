@@ -77,6 +77,7 @@ class PostCell: UICollectionViewCell {
       let control = UIPageControl()
       control.currentPageIndicatorTintColor = .label
       control.pageIndicatorTintColor = .systemGray3
+      control.addTarget(self, action: #selector(handlePageControl), for: .touchUpInside)
       
       control.translatesAutoresizingMaskIntoConstraints = false
       return control
@@ -332,9 +333,7 @@ extension PostCell {
       descriptionLabel.attributedText = NSMutableAttributedString()
          .bold(name, fontSize: 13)
          .normal(description, fontSize: 13)
-      
-      //      postImageView.downloadImage(fromURL: postImageUrl)
-      
+            
       pageControl.numberOfPages = 3
       pageControl.currentPage = 0
       
@@ -352,10 +351,7 @@ extension PostCell: UICollectionViewDataSource {
    
    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
       let image = images[indexPath.item]
-      let cell = collectionView.dequeueReusableCell(
-         withReuseIdentifier: PostImageCell.reuseId,
-         for: indexPath
-      ) as! PostImageCell
+      let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PostImageCell.reuseId,for: indexPath) as! PostImageCell
       cell.set(image: image)
       return cell
    }
@@ -389,6 +385,12 @@ extension PostCell {
          }
          
       }
+   }
+   
+   @objc private func handlePageControl(_ sender: UIPageControl) {
+      pageIndicatorView.set(currentIndex: sender.currentPage, totalPageCount: images.count)
+      let indexPath = IndexPath(item: sender.currentPage, section: 0)
+      postImagesCollectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
    }
 }
 
