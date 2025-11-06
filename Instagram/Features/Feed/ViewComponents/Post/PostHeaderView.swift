@@ -5,7 +5,6 @@
 //  Created by Alpay Calalli on 30.10.25.
 //
 
-
 import UIKit
 
 final class PostHeaderView: UIView {
