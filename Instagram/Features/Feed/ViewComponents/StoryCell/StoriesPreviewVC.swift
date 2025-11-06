@@ -150,22 +150,8 @@ class StoriesPreviewVC: UIViewController {
    override func viewDidLoad() {
       viewModel.output = self
       layoutUI()
-      //      configureStoryTimer()
       viewModel.configureStoryTimer()
    }
-   
-   //   func configureStoryTimer() {
-   //      viewModel.timer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { timer in
-   //           // 5 seconds total / 0.05 interval = 100 ticks → each tick should add 1/100 = 0.01
-   //           if self.progressBarView.progress < 1 {
-   //              self.progressBarView.setProgress(self.progressBarView.progress + 0.01, animated: true)
-   //
-   //           } else {
-   //               self.viewModel.handleForwardAction()
-   //               timer.invalidate()
-   //           }
-   //       }
-   //   }
    
    override func viewWillAppear(_ animated: Bool) {
       super.viewWillAppear(animated)
@@ -214,6 +200,7 @@ class StoriesPreviewVC: UIViewController {
 }
 
 extension StoriesPreviewVC: StoriesPreviewViewModelOutput {
+   
    func timerUpdated() {
       if self.progressBarView.progress < 1 {
          self.progressBarView.setProgress(self.progressBarView.progress + 0.01, animated: true)
@@ -225,7 +212,7 @@ extension StoriesPreviewVC: StoriesPreviewViewModelOutput {
    }
    
    func showNextStory(withIndex index: Int, stories: [StoryDataModel]) {
-      let vc = StoriesPreviewVC(stories: stories, index: index)
+      let destinationVC = StoriesPreviewVC(stories: stories, index: index)
       
       let transition = CATransition()
       transition.duration = 0.3
@@ -233,8 +220,13 @@ extension StoriesPreviewVC: StoriesPreviewViewModelOutput {
       transition.subtype = .fromRight
       transition.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
       navigationController?.view.layer.add(transition, forKey: kCATransition)
-      navigationController?.pushViewController(vc, animated: true)
+      navigationController?.pushViewController(destinationVC, animated: true)
+      destinationVC.view.isUserInteractionEnabled = false
       
+      // prevent consecutive, bad looking navigations
+      DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+         destinationVC.view.isUserInteractionEnabled = true
+      }
    }
    
    func showPreviousStory(withIndex index: Int, stories: [StoryDataModel]) {

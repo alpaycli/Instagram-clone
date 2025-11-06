@@ -54,6 +54,10 @@ final class PostHeaderView: UIView {
    
    private lazy var mainStack: UIStackView = {
       let stack = UIStackView(arrangedSubviews: [avatarImageView, textStack, UIView(), optionsButton])
+      
+      avatarImageView.widthAnchor.constraint(equalToConstant: 32).isActive = true
+      avatarImageView.heightAnchor.constraint(equalToConstant: 32).isActive = true
+
       stack.axis = .horizontal
       stack.alignment = .center
       stack.spacing = 12
@@ -79,9 +83,6 @@ final class PostHeaderView: UIView {
          mainStack.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8),
          mainStack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
          mainStack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12),
-         
-         avatarImageView.widthAnchor.constraint(equalToConstant: 32),
-         avatarImageView.heightAnchor.constraint(equalToConstant: 32)
       ])
    }
    
