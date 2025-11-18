@@ -13,9 +13,10 @@ final class PostHeaderView: UIView {
    
    private let avatarImageView: GFAvatarImageView = {
       let iv = GFAvatarImageView(frame: .zero)
-      iv.contentMode = .scaleAspectFill
+      iv.contentMode = .scaleAspectFit
+//      iv.layer.masksToBounds = true
+      iv.clipsToBounds = true
       iv.layer.cornerRadius = 16
-      iv.layer.masksToBounds = true
       iv.backgroundColor = .systemGray5
       
       iv.translatesAutoresizingMaskIntoConstraints = false

@@ -9,8 +9,6 @@ import Foundation
 
 // date -> string
 // story bug
-// story xbutton
-// post profile photo corner radius
 // combine
 
 protocol FeedViewModelOutput: AnyObject {

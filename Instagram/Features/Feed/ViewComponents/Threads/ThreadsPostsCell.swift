@@ -88,9 +88,9 @@ final class ThreadsPostsCell: UICollectionViewCell {
          headerView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 12),
          headerView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
          headerView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-         headerView.heightAnchor.constraint(equalToConstant: 44),
+         headerView.heightAnchor.constraint(equalToConstant: 48),
          
-         scrollView.topAnchor.constraint(equalTo: headerView.bottomAnchor, constant: 8),
+         scrollView.topAnchor.constraint(equalTo: headerView.bottomAnchor, constant: 6),
          scrollView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
          scrollView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
          scrollView.heightAnchor.constraint(equalToConstant: 360),

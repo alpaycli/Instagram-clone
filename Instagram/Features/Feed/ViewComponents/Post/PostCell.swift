@@ -174,9 +174,9 @@ class PostCell: UICollectionViewCell {
          headerView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 12),
          headerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 0),
          headerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-         headerView.heightAnchor.constraint(equalToConstant: 44),
+         headerView.heightAnchor.constraint(equalToConstant: 48),
          
-         postImagesCollectionView.topAnchor.constraint(equalTo: headerView.bottomAnchor, constant: 10),
+         postImagesCollectionView.topAnchor.constraint(equalTo: headerView.bottomAnchor, constant: 6),
          postImagesCollectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
          postImagesCollectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
          //         postImagesCollectionView.heightAnchor.constraint(equalToConstant: 375),
