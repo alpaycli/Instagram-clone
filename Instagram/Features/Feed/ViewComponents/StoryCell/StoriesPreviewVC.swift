@@ -30,7 +30,7 @@ class StoriesPreviewVC: UIViewController {
    
    private lazy var closeButton: UIButton = {
       let btn = UIButton()
-      let symbolConfig = UIImage.SymbolConfiguration(font: .systemFont(ofSize: 32))
+      let symbolConfig = UIImage.SymbolConfiguration(font: .systemFont(ofSize: 24))
       let image = UIImage(systemName: "xmark", withConfiguration: symbolConfig)
       
       btn.setImage(image, for: .normal)
@@ -185,7 +185,7 @@ class StoriesPreviewVC: UIViewController {
          closeButton.heightAnchor.constraint(equalToConstant: 32),
          closeButton.widthAnchor.constraint(equalToConstant: 32),
          
-         bottomBarView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -8),
+         bottomBarView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -15.5),
          bottomBarView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
          bottomBarView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
          bottomBarView.heightAnchor.constraint(equalToConstant: 50),
@@ -193,7 +193,7 @@ class StoriesPreviewVC: UIViewController {
          imageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
          imageView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
          imageView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-         imageView.bottomAnchor.constraint(equalTo: bottomBarView.topAnchor, constant: -8),
+         imageView.bottomAnchor.constraint(equalTo: bottomBarView.topAnchor, constant: -15.5),
       ])
       view.bringSubviewsToFront(progressBarView, userInfoStackView, closeButton)
    }

@@ -30,17 +30,25 @@ class StoryBottomBarView: UIView, UISearchTextFieldDelegate {
    
    private lazy var containerView: UIView = {
       let view = UIView()
-      view.backgroundColor = UIColor(white: 0.15, alpha: 1)
-      view.layer.cornerRadius = 25
+      view.backgroundColor = .clear
+      view.layer.cornerRadius = 24.5
+      view.layer.borderColor = UIColor(hexString: "A3A3A3").cgColor
+      view.layer.borderWidth = 1.0
+
       view.translatesAutoresizingMaskIntoConstraints = false
       return view
    }()
    
    private lazy var messageTextField: UITextField = {
       let tf = UITextField()
+//      tf.backgroundColor = UIColor.clear
+//      tf.layer.borderColor = UIColor(hexString: "A3A3A3").cgColor
+//      tf.layer.borderWidth = 1.0
+//      tf.layer.cornerRadius = 21.5
+      
       tf.placeholder = .init(localized: "Send Message")
       tf.textColor = .white
-      tf.font = .systemFont(ofSize: 17)
+      tf.font = .systemFont(ofSize: 15)
       tf.attributedPlaceholder = NSAttributedString(
          string: "Send Message",
          attributes: [.foregroundColor: UIColor.white]
@@ -118,8 +126,8 @@ class StoryBottomBarView: UIView, UISearchTextFieldDelegate {
          // Send button
          sendButton.trailingAnchor.constraint(equalTo: moreButton.leadingAnchor, constant: -8),
          sendButton.centerYAnchor.constraint(equalTo: centerYAnchor),
-         sendButton.widthAnchor.constraint(equalToConstant: 44),
-         sendButton.heightAnchor.constraint(equalToConstant: 44),
+         sendButton.widthAnchor.constraint(equalToConstant: 40),
+         sendButton.heightAnchor.constraint(equalToConstant: 40),
          
          // More button
          moreButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
