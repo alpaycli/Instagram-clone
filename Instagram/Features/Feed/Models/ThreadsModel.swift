@@ -22,12 +22,12 @@ struct ThreadPost: Codable {
    let id: String
    let ownerPhoto: String
    let username: String
-   let createdAt: Date?
+   let createdAt: String?
    let image: String?
    let text: String?
    let likeCount, commentCount, repostCount, sharedCount: Int
    
-   init(id: String, ownerPhoto: String, username: String, createdAt: Date?, image: String?, text: String?, likeCount: Int, commentCount: Int, repostCount: Int, sharedCount: Int) {
+   init(id: String, ownerPhoto: String, username: String, createdAt: String?, image: String?, text: String?, likeCount: Int, commentCount: Int, repostCount: Int, sharedCount: Int) {
       self.id = id
       self.ownerPhoto = ownerPhoto
       self.username = username
@@ -56,7 +56,7 @@ struct ThreadPost: Codable {
       self.id = id
       self.ownerPhoto = ownerPhoto
       self.username = username
-      self.createdAt = createdAt
+      self.createdAt = createdAt?.formatted()
       self.image = image
       self.text = text
       self.likeCount = likeCount

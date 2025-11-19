@@ -108,13 +108,14 @@ class StoryBottomBarView: UIView, UISearchTextFieldDelegate {
       NSLayoutConstraint.activate([
          // Container view
          containerView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8),
-         containerView.centerYAnchor.constraint(equalTo: centerYAnchor),
+//         containerView.centerYAnchor.constraint(equalTo: centerYAnchor),
+         containerView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -20),
          containerView.heightAnchor.constraint(equalToConstant: 50),
          containerView.trailingAnchor.constraint(equalTo: sendButton.leadingAnchor, constant: -13),
          
          // Camera button
          cameraButton.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 5),
-         cameraButton.centerYAnchor.constraint(equalTo: centerYAnchor),
+         cameraButton.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
          cameraButton.widthAnchor.constraint(equalToConstant: 44),
          cameraButton.heightAnchor.constraint(equalToConstant: 44),
          
@@ -125,13 +126,13 @@ class StoryBottomBarView: UIView, UISearchTextFieldDelegate {
          
          // Send button
          sendButton.trailingAnchor.constraint(equalTo: moreButton.leadingAnchor, constant: -8),
-         sendButton.centerYAnchor.constraint(equalTo: centerYAnchor),
+         sendButton.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
          sendButton.widthAnchor.constraint(equalToConstant: 40),
          sendButton.heightAnchor.constraint(equalToConstant: 40),
          
          // More button
          moreButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-         moreButton.centerYAnchor.constraint(equalTo: centerYAnchor),
+         moreButton.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
          moreButton.widthAnchor.constraint(equalToConstant: 44),
          moreButton.heightAnchor.constraint(equalToConstant: 44)
       ])

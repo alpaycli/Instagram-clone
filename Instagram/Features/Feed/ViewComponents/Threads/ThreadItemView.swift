@@ -141,8 +141,10 @@ final class ThreadItemView: UIView {
    func set(_ post: ThreadPost) {
       profileImageView.downloadImage(fromURL: post.ownerPhoto)
       nameLabel.text = post.username
-      if let createdAt = post.createdAt {
-         timeLabel.text = Date.now.timePassed(from: createdAt)
+      if let createdAtString = post.createdAt,
+         let createdAtDate = parseDateFromISO8601(iso8601Date: createdAtString)
+      {
+         timeLabel.text = Date.now.timePassed(from: createdAtDate)
       }
       descriptionLabel.text = post.text
       

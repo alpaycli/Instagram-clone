@@ -24,6 +24,10 @@ struct NormalPostModel: Identifiable {
       self.images = post.images ?? []
       self.likedBy = post.likedBy ?? []
       self.likeCount = post.likeCount ?? 0
-      self.createdAt = post.createdAt ?? .now
+      if let createdAt = post.createdAt {
+         self.createdAt = parseDateFromISO8601(iso8601Date: createdAt) ?? .distantPast
+      } else {
+         self.createdAt = .distantPast
+      }
    }
 }

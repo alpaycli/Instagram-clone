@@ -5,6 +5,7 @@
 //  Created by Alpay Calalli on 28.10.25.
 //
 
+import Combine
 import UIKit
 
 class FeedVC: UIViewController {
@@ -18,8 +19,11 @@ class FeedVC: UIViewController {
    private let viewModel = FeedViewModel()
    private var collectionView: UICollectionView!
    
+   private var cancellables: Set<AnyCancellable> = []
+   
    override func viewDidLoad() {
       super.viewDidLoad()
+      bindViewModelValues()
       setupViewModel()
       configureNavigationBar()
       configureCollectionView()
@@ -48,11 +52,30 @@ class FeedVC: UIViewController {
    }
    
    private func setupViewModel() {
-      viewModel.output = self
       Task {
          await viewModel.fetchAllPosts()
          await viewModel.fetchAllStories()
       }
+   }
+   
+   private func bindViewModelValues() {
+      viewModel.$allStories
+         .sink { [weak self] receivedStories in
+            guard !receivedStories.isEmpty else { return }
+            DispatchQueue.main.async {
+               self?.collectionView.reloadData()
+            }
+         }
+         .store(in: &cancellables)
+      
+      viewModel.$allPosts
+         .sink { [weak self] receivedPosts in
+            guard !receivedPosts.isEmpty else { return }
+            DispatchQueue.main.async {
+               self?.collectionView.reloadData()
+            }
+         }
+         .store(in: &cancellables)
    }
    
    private func configureCollectionView() {
@@ -88,11 +111,11 @@ extension FeedVC: UICollectionViewDataSource {
          case 0:
             let c = collectionView.dequeueReusableCell(withReuseIdentifier: StoryItemCell.reuseId, for: indexPath) as! StoryItemCell
             c.set(viewModel.allStories[indexPath.item])
-            c.onStoryTapped = {
-               self.viewModel.allStories[indexPath.item].isSeen = true
-               let vc = StoriesPreviewVC(stories: self.viewModel.allStories, index: indexPath.row)
-               self.navigationController?.pushViewController(vc, animated: true)
-            }
+//            c.onStoryTapped = {
+//               self.viewModel.allStories[indexPath.item].isSeen = true
+//               let vc = StoriesPreviewVC(stories: self.viewModel.allStories, index: indexPath.row)
+//               self.navigationController?.pushViewController(vc, animated: true)
+//            }
             cell = c
          default:
             switch viewModel.allPosts[indexPath.item].type {
@@ -125,12 +148,18 @@ extension FeedVC: UICollectionViewDelegate {
    }
    
    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+      print("did select section", indexPath.section)
       guard indexPath.section == 0 else { return }
       
       let vc = StoriesPreviewVC(
-         stories: viewModel.allStories,
-         index: indexPath.row)
-      self.navigationController?.pushViewController(vc, animated: true)
+          stories: viewModel.allStories,
+          index: indexPath.item
+      )
+
+      let nav = UINavigationController(rootViewController: vc)
+      nav.modalPresentationStyle = .fullScreen
+
+      self.present(nav, animated: true)
    }
 }
 
@@ -156,11 +185,11 @@ extension FeedVC {
       )
       
       let item = NSCollectionLayoutItem(layoutSize: itemSize)
+      item.edgeSpacing = .init(leading: .fixed(6), top: nil, trailing: nil, bottom: nil)
       
-      let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(110))
+      let groupSize = NSCollectionLayoutSize(widthDimension: .estimated(80), heightDimension: .absolute(110))
       
       let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
-      group.interItemSpacing = .fixed(10)
       
       let section = NSCollectionLayoutSection(group: group)
       section.orthogonalScrollingBehavior = .continuous
@@ -189,14 +218,6 @@ extension FeedVC {
       section.interGroupSpacing = 0
       section.orthogonalScrollingBehavior = .none
       return section
-   }
-}
-
-extension FeedVC: FeedViewModelOutput {
-   func updateView() {
-      DispatchQueue.main.async {
-         self.collectionView.reloadData()
-      }
    }
 }
 

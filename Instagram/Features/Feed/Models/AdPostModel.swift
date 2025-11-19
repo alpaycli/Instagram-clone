@@ -23,6 +23,11 @@ struct AdPostModel {
       self.shoppingUrl = post.shoppingURL
       self.likeCount = post.likeCount ?? 0
       self.likedBy = post.likedBy ?? []
-      self.createdAt = post.createdAt ?? .now
+      
+      if let createdAt = post.createdAt {
+         self.createdAt = parseDateFromISO8601(iso8601Date: createdAt) ?? .distantPast
+      } else {
+         self.createdAt = .distantPast
+      }
    }
 }

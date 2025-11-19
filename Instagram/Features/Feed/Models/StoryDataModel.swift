@@ -8,7 +8,9 @@
 import Foundation
 
 /// This class is for storing/handling states such as `isSeen` of a story.
-class StoryDataModel {
+class StoryDataModel: Identifiable {
+   var id: String { username }
+   
    var storyModel: StoryModel
    var isSeen = false
    

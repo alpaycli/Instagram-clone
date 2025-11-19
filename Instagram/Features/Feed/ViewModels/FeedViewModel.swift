@@ -5,21 +5,12 @@
 //  Created by Alpay Calalli on 28.10.25.
 //
 
+import Combine
 import Foundation
 
-// date -> string
-// story bug
-// combine
-
-protocol FeedViewModelOutput: AnyObject {
-   func updateView()
-}
-
-class FeedViewModel {
-   weak var output: FeedViewModelOutput?
-   
-   private(set) var allStories: [StoryDataModel] = StoryDataModel.mockData
-   private(set) var allPosts: [PostModel] = PostModel.mockData
+class FeedViewModel: ObservableObject {
+   @Published private(set) var allStories: [StoryDataModel] = StoryDataModel.mockData
+   @Published private(set) var allPosts: [PostModel] = PostModel.mockData
    
    private let networkManager = NetworkManager.shared
    
@@ -34,7 +25,6 @@ class FeedViewModel {
          let response = try await networkManager.fetch(PostResponse.self, url: urlRequest)
          let result = response.data
          allPosts = result
-         output?.updateView()
       } catch {
          print("Error with network request", error.localizedDescription)
       }
@@ -53,13 +43,12 @@ class FeedViewModel {
          let response = try await networkManager.fetch(StoryResponse.self, url: urlRequest)
          let result = response.data
          allStories = result.map({ StoryDataModel(storyModel: $0) })
-         output?.updateView()
          
          let yourStory = StoryDataModel(
             storyModel: .init(
                username: .init(localized: "Your Story"),
                userPhoto: nil,
-               storyUrl: nil,
+               storyUrl: "https://picsum.photos/seed/s2/720/1280",
                isLive: false
             )
          )

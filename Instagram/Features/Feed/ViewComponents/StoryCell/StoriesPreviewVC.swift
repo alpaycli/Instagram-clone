@@ -42,7 +42,8 @@ class StoriesPreviewVC: UIViewController {
    }()
    
    @objc func closeButtonTapped() {
-      navigationController?.popToRootViewController(animated: true)
+//      navigationController?.popToRootViewController(animated: true)
+      navigationController?.dismiss(animated: true)
    }
    
    private lazy var userInfoStackView: UIStackView = {
@@ -66,6 +67,9 @@ class StoriesPreviewVC: UIViewController {
    
    private lazy var profileImageView: GFAvatarImageView = {
       let imageView = GFAvatarImageView(frame: .zero)
+      if let url = viewModel.currentStory?.userPhoto {
+         imageView.downloadImage(fromURL: url)
+      }
       imageView.layer.cornerRadius = 16
       imageView.clipsToBounds = true
       imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -149,6 +153,7 @@ class StoriesPreviewVC: UIViewController {
    
    override func viewDidLoad() {
       viewModel.output = self
+      configureStackView()
       layoutUI()
       viewModel.configureStoryTimer()
    }
@@ -165,9 +170,32 @@ class StoriesPreviewVC: UIViewController {
       // This is important if you want the navigation bar to reappear in other view controllers
       self.navigationController?.setNavigationBarHidden(false, animated: animated)
    }
+      
+   private lazy var generalStackView: UIStackView = {
+      let sv = UIStackView()
+      sv.axis = .vertical
+      sv.alignment = .center
+      
+      sv.translatesAutoresizingMaskIntoConstraints = false
+      return sv
+   }()
+   
+   private func configureStackView() {
+      view.addSubview(generalStackView)
+      generalStackView.addArrangedSubview(imageView)
+      generalStackView.addArrangedSubview(bottomBarView)
+      
+      bottomBarView.heightAnchor.constraint(equalToConstant: 78).isActive = true
+      bottomBarView.widthAnchor.constraint(equalToConstant: view.frame.width).isActive = true
+      
+      generalStackView.distribution = .fill
+   }
    
    private func layoutUI() {
-      view.addSubviews(progressBarView, userInfoStackView, closeButton, imageView, leftHalfOfScreen, rightHalfOfScreen, bottomBarView)
+      view.addSubviews(progressBarView, userInfoStackView, closeButton, /*imageView, bottomBarView*/)
+      view.addSubviews(leftHalfOfScreen, rightHalfOfScreen)
+      
+      generalStackView.backgroundColor = .black
       
       NSLayoutConstraint.activate([
          progressBarView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 8),
@@ -179,13 +207,13 @@ class StoriesPreviewVC: UIViewController {
          userInfoStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 14),
          userInfoStackView.heightAnchor.constraint(equalToConstant: 32),
          
-         
          closeButton.topAnchor.constraint(equalTo: progressBarView.bottomAnchor, constant: 18),
          closeButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -14),
          closeButton.heightAnchor.constraint(equalToConstant: 32),
          closeButton.widthAnchor.constraint(equalToConstant: 32),
-         
-         bottomBarView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -15.5),
+
+         /*
+         bottomBarView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0),
          bottomBarView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
          bottomBarView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
          bottomBarView.heightAnchor.constraint(equalToConstant: 50),
@@ -193,9 +221,17 @@ class StoriesPreviewVC: UIViewController {
          imageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
          imageView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
          imageView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-         imageView.bottomAnchor.constraint(equalTo: bottomBarView.topAnchor, constant: -15.5),
+         imageView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -50),
+          */
+         
+         generalStackView.topAnchor.constraint(equalTo: view.topAnchor),
+         generalStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+         generalStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+         generalStackView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0),
       ])
       view.bringSubviewsToFront(progressBarView, userInfoStackView, closeButton)
+      
+//      bottomBarView.backgroundColor = .green
    }
 }
 
@@ -242,6 +278,7 @@ extension StoriesPreviewVC: StoriesPreviewViewModelOutput {
    }
    
    func close() {
-      navigationController?.popToRootViewController(animated: true)
+//      navigationController?.popToRootViewController(animated: true)
+      dismiss(animated: true)
    }
 }

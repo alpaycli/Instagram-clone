@@ -25,7 +25,8 @@ class StoryItemCell: UICollectionViewCell {
          )
       )
       
-      button.delegate = self
+//      button.delegate = self
+      button.isUserInteractionEnabled = false   
       
       button.translatesAutoresizingMaskIntoConstraints = false
       return button
@@ -55,6 +56,7 @@ class StoryItemCell: UICollectionViewCell {
       super.prepareForReuse()
       button.image = nil
       button.condition = .init(display: .none)
+      liveIndicatorView.isHidden = true
       
       usernameLabel.text = nil
    }
@@ -94,6 +96,8 @@ class StoryItemCell: UICollectionViewCell {
    private func layoutLiveIndicatorViewIfNeeded(isLive: Bool) {
       guard isLive else { return }
       
+      liveIndicatorView.isHidden = false
+      
       addSubview(liveIndicatorView)
       NSLayoutConstraint.activate([
          liveIndicatorView.centerYAnchor.constraint(equalTo: button.bottomAnchor, constant: 4),
@@ -105,14 +109,14 @@ class StoryItemCell: UICollectionViewCell {
    }
 }
 
-extension StoryItemCell: IGStoryButtonDelegate {
-   func didLongPressed() {}
-   
-   func didTapped() {
-      button.condition = .init(display: .seen)
-      onStoryTapped()
-   }
-}
+//extension StoryItemCell: IGStoryButtonDelegate {
+//   func didLongPressed() {}
+//   
+//   func didTapped() {
+//      button.condition = .init(display: .seen)
+//      onStoryTapped()
+//   }
+//}
 
 extension StoryItemCell {
    private func loadImage(from urlString: String, completion: @escaping (UIImage?) -> Void) {

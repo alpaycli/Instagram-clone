@@ -44,3 +44,10 @@ extension Date {
    }
    
 }
+
+func parseDateFromISO8601(iso8601Date: String) -> Date? {
+   let formatter = ISO8601DateFormatter()
+   formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+
+   return formatter.date(from: "2022-01-31T10:00:00.123Z")
+}

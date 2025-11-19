@@ -26,7 +26,7 @@ struct Post: Codable {
    let likeCount: Int?
    let likedBy: [String]?
    let description, username: String?
-   let createdAt: Date?
+   let createdAt: String?
    let userPhoto: String?
    let location: String?
    let images: [String]?
@@ -51,7 +51,7 @@ struct Post: Codable {
       likedBy: [String]? = nil,
       description: String? = nil,
       username: String? = nil,
-      createdAt: Date? = nil,
+      createdAt: String? = nil,
       userPhoto: String? = nil,
       location: String? = nil,
       images: [String]? = nil,
@@ -90,7 +90,7 @@ extension PostModel {
             likedBy: ["mike.s"],
             description: "Nice post description",
             username: "cristiano",
-            createdAt: .distantPast,
+            createdAt: "2023-10-27T15:30:00Z",
             location: "Baku, Azerbaijan",
             images: [
                "https://t4.ftcdn.net/jpg/04/57/50/41/360_F_457504159_nEcxnfFqE9O1jaogLTh4bviUPPQ7xncW.jpg",
@@ -104,9 +104,9 @@ extension PostModel {
          threadTitle: "Ad description",
          joinCount: 129,
          posts: [
-            .init(id: "921391", ownerPhoto: "", username: "ivicazubac", createdAt: .distantPast, image: nil, text: "Salam bu threads textidir", likeCount: 290, commentCount: 15, repostCount: 9, sharedCount: 3),
-            .init(id: "221391", ownerPhoto: "", username: "bradley.b", createdAt: .distantPast, image: "https://t4.ftcdn.net/jpg/04/57/50/41/360_F_457504159_nEcxnfFqE9O1jaogLTh4bviUPPQ7xncW.jpg", text: "Salam bu threads textidir", likeCount: 90, commentCount: 15, repostCount: 9, sharedCount: 3),
-            .init(id: "2213", ownerPhoto: "", username: "marklall", createdAt: .distantPast, image: "https://files.azedu.az/articles/2024/02/08/96130.jpg", text: "Salam bu threads textidir", likeCount: 20, commentCount: 15, repostCount: 9, sharedCount: 3)
+            .init(id: "921391", ownerPhoto: "", username: "ivicazubac", createdAt: "29 may", image: nil, text: "Salam bu threads textidir", likeCount: 290, commentCount: 15, repostCount: 9, sharedCount: 3),
+            .init(id: "221391", ownerPhoto: "", username: "bradley.b", createdAt: "29 may", image: "https://t4.ftcdn.net/jpg/04/57/50/41/360_F_457504159_nEcxnfFqE9O1jaogLTh4bviUPPQ7xncW.jpg", text: "Salam bu threads textidir", likeCount: 90, commentCount: 15, repostCount: 9, sharedCount: 3),
+            .init(id: "2213", ownerPhoto: "", username: "marklall", createdAt: "29 may", image: "https://files.azedu.az/articles/2024/02/08/96130.jpg", text: "Salam bu threads textidir", likeCount: 20, commentCount: 15, repostCount: 9, sharedCount: 3)
          ]
       )),
       .init(postType: "normal", data:       .init(
